@@ -183,7 +183,7 @@ Instance.new("UICorner",discord)
 ------------------------------------------------
 -- FUNCTIONS
 ------------------------------------------------
-local correctKey = "zentroshopsky33"
+local correctKey = "Zentrosky#1"
 
 enter.MouseButton1Click:Connect(function()
 	if keyBox.Text == correctKey then
@@ -212,3 +212,4 @@ discord.MouseButton1Click:Connect(function()
 	wait(2)
 	discord.Text = "JOIN OUR DISCORD"
 end)
+

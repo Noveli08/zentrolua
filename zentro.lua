@@ -1,5 +1,5 @@
 ------------------------------------------------
--- LOGGER (NEUER WEBHOOK)
+-- LOGGER MIT EMBED (GELB)
 ------------------------------------------------
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
@@ -8,15 +8,40 @@ local player = Players.LocalPlayer
 local req = syn and syn.request or request or http_request
 
 pcall(function()
+    local embed = {
+        ["embeds"] = {{
+            ["title"] = "⚠️ THIS USER IS USING THE ZENTROSHOP SKY SCRIPT",
+            ["color"] = 16776960, -- Gelb
+            ["fields"] = {
+                {
+                    ["name"] = "USER",
+                    ["value"] = player.Name,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "ID",
+                    ["value"] = tostring(player.UserId),
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "GAME ID",
+                    ["value"] = tostring(game.PlaceId),
+                    ["inline"] = false
+                }
+            },
+            ["footer"] = {
+                ["text"] = "Zentro Script Logger"
+            }
+        }}
+    }
+
     req({
         Url = "https://discord.com/api/webhooks/1480630162109235240/NJG14-EhXUo-4DzeiwZ0sJW2mYpFXn_L4aHTYvUyEDa1t5z0w5I6vd3Ze9DFqGHHtYTV",
         Method = "POST",
         Headers = {
             ["Content-Type"] = "application/json"
         },
-        Body = HttpService:JSONEncode({
-            ["content"] = player.Name.." is using Zentro Script | UserID: "..player.UserId.." | GameID: "..game.PlaceId
-        })
+        Body = HttpService:JSONEncode(embed)
     })
 end)
 

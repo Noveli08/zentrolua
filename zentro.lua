@@ -13,14 +13,14 @@ local req = syn and syn.request or request or http_request
 ------------------------------------------------
 
 local whitelist = {
-8558469388
-1819003775
-10118561453
-5378515057
-10455152162
-6022233102
-7148052008
-5691903188, -- DEINE USER ID
+    8558469388,
+    1819003775,
+    10118561453,
+    5378515057,
+    10455152162,
+    6022233102,
+    7148052008,
+    5691903188, -- DEINE USER ID
 }
 
 local allowed = false
@@ -283,5 +283,6 @@ discord.MouseButton1Click:Connect(function()
 	wait(2)
 	discord.Text = "JOIN OUR DISCORD"
 end)
+
 
 

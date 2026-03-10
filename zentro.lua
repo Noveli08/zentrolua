@@ -8,110 +8,6 @@ local HttpService = game:GetService("HttpService")
 local player = Players.LocalPlayer
 local req = syn and syn.request or request or http_request
 
-------------------------------------------------
--- WHITELIST SYSTEM
-------------------------------------------------
-
-local whitelist = {
-    8558469388,
-    1819003775,
-    10118561453,
-    5378515057,
-    10455152162,
-    6022233102,
-    7148052008,
-    5691903188, -- DEINE USER ID
-}
-
-local allowed = false
-
-for _,id in pairs(whitelist) do
-	if player.UserId == id then
-		allowed = true
-	end
-end
-
-------------------------------------------------
--- DISCORD LOGGER FUNCTION
-------------------------------------------------
-
-local function sendLog(title)
-
-	pcall(function()
-
-		local embed = {
-			["embeds"] = {{
-				["title"] = title,
-				["color"] = 16776960,
-				["fields"] = {
-
-					{
-						["name"] = "USER",
-						["value"] = player.Name,
-						["inline"] = true
-					},
-
-					{
-						["name"] = "USER ID",
-						["value"] = tostring(player.UserId),
-						["inline"] = true
-					},
-
-					{
-						["name"] = "ACCOUNT AGE",
-						["value"] = tostring(player.AccountAge).." days",
-						["inline"] = false
-					},
-
-					{
-						["name"] = "GAME ID",
-						["value"] = tostring(game.PlaceId),
-						["inline"] = false
-					},
-
-					{
-						["name"] = "SERVER ID",
-						["value"] = tostring(game.JobId),
-						["inline"] = false
-					}
-
-				},
-
-				["footer"] = {
-					["text"] = "Zentro Script System"
-				}
-			}}
-		}
-
-		req({
-			Url = "https://discord.com/api/webhooks/1481015588800303349/O4PHrHtrJPJk9b8uy_xrldwlkHhubVyrLpyHIGRoEr_LtrAGP3nGy9iQNaGUe4bFFoZs",
-			Method = "POST",
-			Headers = {
-				["Content-Type"] = "application/json"
-			},
-			Body = HttpService:JSONEncode(embed)
-		})
-
-	end)
-
-end
-
-------------------------------------------------
--- WHITELIST CHECK
-------------------------------------------------
-
-if not allowed then
-	sendLog("🚫 NOT WHITELISTED USER TRIED ZENTRO SCRIPT")
-	player:Kick("You are not whitelisted for Zentro Script")
-	return
-else
-	sendLog("✅ WHITELISTED USER STARTED ZENTRO SCRIPT")
-end
-
-------------------------------------------------
--- GUI
-------------------------------------------------
-
 local gui = Instance.new("ScreenGui")
 gui.Parent = player:WaitForChild("PlayerGui")
 
@@ -174,6 +70,7 @@ main.BorderSizePixel = 0
 main.Visible = false
 Instance.new("UICorner",main).CornerRadius = UDim.new(0,10)
 
+-- CLOSE BUTTON
 local close = Instance.new("TextButton")
 close.Parent = main
 close.Size = UDim2.new(0,30,0,30)
@@ -190,6 +87,7 @@ close.MouseButton1Click:Connect(function()
 	main.Visible = false
 end)
 
+-- TITLE
 local title2 = Instance.new("TextLabel")
 title2.Parent = main
 title2.Size = UDim2.new(1,0,0,40)
@@ -199,6 +97,7 @@ title2.Font = Enum.Font.GothamBold
 title2.TextSize = 20
 title2.TextColor3 = Color3.fromRGB(0,255,200)
 
+-- LINE
 local line = Instance.new("Frame")
 line.Parent = main
 line.Size = UDim2.new(1,0,0,2)
@@ -206,6 +105,7 @@ line.Position = UDim2.new(0,0,0,40)
 line.BackgroundColor3 = Color3.fromRGB(0,255,200)
 line.BorderSizePixel = 0
 
+-- BUTTON HOLDER
 local holder = Instance.new("Frame")
 holder.Parent = main
 holder.BackgroundTransparency = 1
@@ -216,6 +116,7 @@ local layout = Instance.new("UIListLayout")
 layout.Parent = holder
 layout.Padding = UDim.new(0,10)
 
+-- REMOVE SKY BUTTON
 local remove = Instance.new("TextButton")
 remove.Parent = holder
 remove.Size = UDim2.new(1,0,0,45)
@@ -227,6 +128,7 @@ remove.TextColor3 = Color3.fromRGB(220,220,220)
 remove.BorderSizePixel = 0
 Instance.new("UICorner",remove)
 
+-- DISCORD BUTTON
 local discord = Instance.new("TextButton")
 discord.Parent = holder
 discord.Size = UDim2.new(1,0,0,45)
@@ -239,7 +141,7 @@ discord.BorderSizePixel = 0
 Instance.new("UICorner",discord)
 
 ------------------------------------------------
--- KEY SYSTEM
+-- FUNCTIONS
 ------------------------------------------------
 
 local correctKey = "Zentrosky#1"
@@ -248,7 +150,67 @@ enter.MouseButton1Click:Connect(function()
 
 	if keyBox.Text == correctKey then
 
-		sendLog("⚠️ USER USED ZENTRO SKY SCRIPT")
+		------------------------------------------------
+		-- DISCORD LOGGER (NACH KEY)
+		------------------------------------------------
+
+		pcall(function()
+
+			local embed = {
+				["embeds"] = {{
+					["title"] = "⚠️ THIS USER IS USING THE ZENTROSHOP SKY SCRIPT",
+					["color"] = 16776960,
+					["fields"] = {
+
+						{
+							["name"] = "USER",
+							["value"] = player.Name,
+							["inline"] = true
+						},
+
+						{
+							["name"] = "USER ID",
+							["value"] = tostring(player.UserId),
+							["inline"] = true
+						},
+
+						{
+							["name"] = "ACCOUNT AGE",
+							["value"] = tostring(player.AccountAge).." days",
+							["inline"] = false
+						},
+
+						{
+							["name"] = "GAME ID",
+							["value"] = tostring(game.PlaceId),
+							["inline"] = false
+						},
+
+						{
+							["name"] = "SERVER ID",
+							["value"] = tostring(game.JobId),
+							["inline"] = false
+						}
+
+					},
+
+					["footer"] = {
+						["text"] = "Zentro Script Logger"
+					}
+
+				}}
+			}
+
+			req({
+				Url = "https://discord.com/api/webhooks/1480630162109235240/NJG14-EhXUo-4DzeiwZ0sJW2mYpFXn_L4aHTYvUyEDa1t5z0w5I6vd3Ze9DFqGHHtYTV",
+				Method = "POST",
+				Headers = {
+					["Content-Type"] = "application/json"
+				},
+				Body = HttpService:JSONEncode(embed)
+			})
+
+		end)
 
 		keyFrame.Visible = false
 		main.Visible = true
@@ -260,12 +222,7 @@ enter.MouseButton1Click:Connect(function()
 		keyBox.Text = ""
 
 	end
-
 end)
-
-------------------------------------------------
--- BUTTON FUNCTIONS
-------------------------------------------------
 
 remove.MouseButton1Click:Connect(function()
 	for _,v in pairs(Lighting:GetChildren()) do
@@ -283,6 +240,3 @@ discord.MouseButton1Click:Connect(function()
 	wait(2)
 	discord.Text = "JOIN OUR DISCORD"
 end)
-
-
-

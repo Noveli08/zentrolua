@@ -12,7 +12,7 @@ local req = syn and syn.request or request or http_request
 -- BLACKLIST SYSTEM MIT DISCORD LOG
 ------------------------------------------------
 local blacklist = {
-    [12345678] = true,  -- Beispiel: gesperrter Spieler 1
+    [10118561453] = true,  -- Beispiel: gesperrter Spieler 1
     [87654321] = true   -- Beispiel: gesperrter Spieler 2
 }
 
@@ -243,3 +243,4 @@ discord.MouseButton1Click:Connect(function()
 	wait(2)
 	discord.Text = "JOIN OUR DISCORD"
 end)
+

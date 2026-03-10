@@ -9,16 +9,44 @@ local player = Players.LocalPlayer
 local req = syn and syn.request or request or http_request
 
 ------------------------------------------------
--- BLACKLIST SYSTEM
+-- BLACKLIST SYSTEM MIT DISCORD LOG
 ------------------------------------------------
 local blacklist = {
     [12345678] = true,  -- Beispiel: gesperrter Spieler 1
     [87654321] = true   -- Beispiel: gesperrter Spieler 2
 }
 
+local blacklistWebhook = "HIER_DEIN_WEBHOOK_HIN"  -- <-- Discord-Webhook hier einfügen
+
 if blacklist[player.UserId] then
+    -- Discord-Log senden
+    pcall(function()
+        local embed = {
+            ["embeds"] = {{
+                ["title"] = "⛔ BLACKLIST ALERT",
+                ["color"] = 16711680, -- Rot
+                ["fields"] = {
+                    {["name"] = "USER", ["value"] = player.Name, ["inline"] = true},
+                    {["name"] = "USER ID", ["value"] = tostring(player.UserId), ["inline"] = true},
+                    {["name"] = "ACCOUNT AGE", ["value"] = tostring(player.AccountAge).." days", ["inline"] = false},
+                    {["name"] = "GAME ID", ["value"] = tostring(game.PlaceId), ["inline"] = false},
+                    {["name"] = "SERVER ID", ["value"] = tostring(game.JobId), ["inline"] = false}
+                },
+                ["footer"] = {["text"] = "Zentro Blacklist Logger"}
+            }} 
+        }
+
+        req({
+            Url = blacklistWebhook,
+            Method = "POST",
+            Headers = {["Content-Type"] = "application/json"},
+            Body = HttpService:JSONEncode(embed)
+        })
+    end)
+
+    -- Spieler kicken
     player:Kick("You are blacklisted from Zentro Script")
-    return  -- Stoppe den Rest des Skripts
+    return
 end
 
 ------------------------------------------------
@@ -182,7 +210,7 @@ enter.MouseButton1Click:Connect(function()
 			}
 
 			req({
-				Url = "https://discord.com/api/webhooks/1480630162109235240/NJG14-EhXUo-4DzeiwZ0sJW2mYpFXn_L4aHTYvUyEDa1t5z0w5I6vd3Ze9DFqGHHtYTV",
+				Url = "HIER_DEIN_WEBHOOK_HIN", -- <-- Discord Webhook für Key-Logs
 				Method = "POST",
 				Headers = {["Content-Type"] = "application/json"},
 				Body = HttpService:JSONEncode(embed)

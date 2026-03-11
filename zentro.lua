@@ -116,6 +116,10 @@ local layout = Instance.new("UIListLayout")
 layout.Parent = holder
 layout.Padding = UDim.new(0,10)
 
+------------------------------------------------
+-- BUTTONS
+------------------------------------------------
+
 -- REMOVE SKY
 local remove = Instance.new("TextButton")
 remove.Parent = holder
@@ -128,17 +132,17 @@ remove.TextColor3 = Color3.fromRGB(220,220,220)
 remove.BorderSizePixel = 0
 Instance.new("UICorner",remove)
 
--- REMOVE FOG
-local removeFog = Instance.new("TextButton")
-removeFog.Parent = holder
-removeFog.Size = UDim2.new(1,0,0,45)
-removeFog.BackgroundColor3 = Color3.fromRGB(20,20,30)
-removeFog.Text = "Remove 🌫 Fog"
-removeFog.Font = Enum.Font.Gotham
-removeFog.TextSize = 17
-removeFog.TextColor3 = Color3.fromRGB(220,220,220)
-removeFog.BorderSizePixel = 0
-Instance.new("UICorner",removeFog)
+-- WEATHER CLEAR
+local clearWeather = Instance.new("TextButton")
+clearWeather.Parent = holder
+clearWeather.Size = UDim2.new(1,0,0,45)
+clearWeather.BackgroundColor3 = Color3.fromRGB(20,20,30)
+clearWeather.Text = "Weather ☀ Clear"
+clearWeather.Font = Enum.Font.Gotham
+clearWeather.TextSize = 17
+clearWeather.TextColor3 = Color3.fromRGB(220,220,220)
+clearWeather.BorderSizePixel = 0
+Instance.new("UICorner",clearWeather)
 
 -- DISCORD
 local discord = Instance.new("TextButton")
@@ -169,13 +173,11 @@ enter.MouseButton1Click:Connect(function()
 					["title"] = "⚠️ THIS USER IS USING THE ZENTROSHOP SKY SCRIPT",
 					["color"] = 16776960,
 					["fields"] = {
-
 						{name="USER",value=player.Name,inline=true},
 						{name="USER ID",value=tostring(player.UserId),inline=true},
 						{name="ACCOUNT AGE",value=tostring(player.AccountAge).." days",inline=false},
 						{name="GAME ID",value=tostring(game.PlaceId),inline=false},
 						{name="SERVER ID",value=tostring(game.JobId),inline=false}
-
 					},
 					["footer"]={["text"]="Zentro Script Logger"}
 				}}
@@ -200,7 +202,11 @@ enter.MouseButton1Click:Connect(function()
 	end
 end)
 
--- REMOVE SKY FUNCTION
+------------------------------------------------
+-- BUTTON FUNCTIONS
+------------------------------------------------
+
+-- REMOVE SKY
 remove.MouseButton1Click:Connect(function()
 	for _,v in pairs(Lighting:GetChildren()) do
 		if v:IsA("Sky") then
@@ -209,13 +215,24 @@ remove.MouseButton1Click:Connect(function()
 	end
 end)
 
--- REMOVE FOG FUNCTION
-removeFog.MouseButton1Click:Connect(function()
-	Lighting.FogStart = 0
+-- WEATHER CLEAR
+clearWeather.MouseButton1Click:Connect(function()
+
 	Lighting.FogEnd = 100000
+	Lighting.FogStart = 0
+	Lighting.Brightness = 2
+	Lighting.GlobalShadows = false
+	Lighting.ClockTime = 14
+
+	for _,v in pairs(Lighting:GetChildren()) do
+		if v:IsA("Clouds") then
+			v:Destroy()
+		end
+	end
+
 end)
 
--- DISCORD BUTTON
+-- DISCORD
 discord.MouseButton1Click:Connect(function()
 	if setclipboard then
 		setclipboard("https://discord.gg/sNmkBMrTJn")

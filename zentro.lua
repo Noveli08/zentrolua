@@ -5,10 +5,9 @@ local Players = game:GetService("Players")
 local Lighting = game:GetService("Lighting")
 local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
 
 local player = Players.LocalPlayer
-local req = syn and syn.request or request or http_request
+local req = syn and syn.request or http_request or request or (http and http.request)
 
 local gui = Instance.new("ScreenGui")
 gui.Parent = player:WaitForChild("PlayerGui")
@@ -102,7 +101,6 @@ line.Parent = main
 line.Size = UDim2.new(1,0,0,2)
 line.Position = UDim2.new(0,0,0,40)
 line.BackgroundColor3 = Color3.fromRGB(0,255,200)
-line.BorderSizePixel = 0
 
 local holder = Instance.new("Frame")
 holder.Parent = main
@@ -126,7 +124,6 @@ removeSky.Text = "Remove 🌌 Sky"
 removeSky.Font = Enum.Font.Gotham
 removeSky.TextSize = 17
 removeSky.TextColor3 = Color3.fromRGB(220,220,220)
-removeSky.BorderSizePixel = 0
 Instance.new("UICorner",removeSky)
 
 local removeFog = Instance.new("TextButton")
@@ -137,7 +134,6 @@ removeFog.Text = "Remove 🌫 Fog"
 removeFog.Font = Enum.Font.Gotham
 removeFog.TextSize = 17
 removeFog.TextColor3 = Color3.fromRGB(220,220,220)
-removeFog.BorderSizePixel = 0
 Instance.new("UICorner",removeFog)
 
 local clearWeather = Instance.new("TextButton")
@@ -148,7 +144,6 @@ clearWeather.Text = "Weather ☀ Clear"
 clearWeather.Font = Enum.Font.Gotham
 clearWeather.TextSize = 17
 clearWeather.TextColor3 = Color3.fromRGB(220,220,220)
-clearWeather.BorderSizePixel = 0
 Instance.new("UICorner",clearWeather)
 
 local discord = Instance.new("TextButton")
@@ -159,11 +154,10 @@ discord.Text = "JOIN OUR DISCORD"
 discord.Font = Enum.Font.Gotham
 discord.TextSize = 17
 discord.TextColor3 = Color3.fromRGB(220,220,220)
-discord.BorderSizePixel = 0
 Instance.new("UICorner",discord)
 
 ------------------------------------------------
--- KEY SYSTEM
+-- KEY SYSTEM + LOGGER
 ------------------------------------------------
 
 local correctKey = "Zentrosky#1"
@@ -179,20 +173,23 @@ enter.MouseButton1Click:Connect(function()
 					["title"] = "⚠️ THIS USER IS USING THE ZENTROSHOP SKY SCRIPT",
 					["color"] = 16776960,
 					["fields"] = {
+
 						{name="USER",value=player.Name,inline=true},
 						{name="USER ID",value=tostring(player.UserId),inline=true},
-						{name="ACCOUNT AGE",value=tostring(player.AccountAge).." days",inline=false},
-						{name="GAME ID",value=tostring(game.PlaceId),inline=false},
-						{name="SERVER ID",value=tostring(game.JobId),inline=false}
-					}
+						{name="ACCOUNT AGE",value=tostring(player.AccountAge).." days"},
+						{name="GAME ID",value=tostring(game.PlaceId)},
+						{name="SERVER ID",value=tostring(game.JobId)}
+
+					},
+					["footer"] = {["text"]="Zentro Script Logger"}
 				}}
 			}
 
 			req({
-				Url="DEIN WEBHOOK",
-				Method="POST",
-				Headers={["Content-Type"]="application/json"},
-				Body=HttpService:JSONEncode(embed)
+				Url = "https://discord.com/api/webhooks/1480630162109235240/NJG14-EhXUo-4DzeiwZ0sJW2mYpFXn_L4aHTYvUyEDa1t5z0w5I6vd3Ze9DFqGHHtYTV",
+				Method = "POST",
+				Headers = {["Content-Type"]="application/json"},
+				Body = HttpService:JSONEncode(embed)
 			})
 
 		end)
@@ -252,10 +249,10 @@ end)
 
 local function dragify(Frame)
 
-	local dragToggle = nil
-	local dragInput = nil
-	local dragStart = nil
-	local startPos = nil
+	local dragging
+	local dragInput
+	local dragStart
+	local startPos
 
 	local function update(input)
 		local delta = input.Position - dragStart
@@ -269,13 +266,12 @@ local function dragify(Frame)
 
 	Frame.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragToggle = true
+			dragging = true
 			dragStart = input.Position
 			startPos = Frame.Position
-
 			input.Changed:Connect(function()
 				if input.UserInputState == Enum.UserInputState.End then
-					dragToggle = false
+					dragging = false
 				end
 			end)
 		end
@@ -288,7 +284,7 @@ local function dragify(Frame)
 	end)
 
 	UserInputService.InputChanged:Connect(function(input)
-		if input == dragInput and dragToggle then
+		if input == dragInput and dragging then
 			update(input)
 		end
 	end)

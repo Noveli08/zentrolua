@@ -9,10 +9,10 @@ local HttpService = game:GetService("HttpService")
 local player = Players.LocalPlayer
 
 -- ============================================================
--- [2] BLACKLIST (Hier IDs zum Bannen eintragen)
+-- [2] BLACKLIST (ID 10485993734 wurde entfernt)
 -- ============================================================
 local Blacklist = {
-	5122905406,  -- Zweite ID
+	5122905406   -- Nur noch diese ID ist gesperrt
 }
 
 -- ============================================================

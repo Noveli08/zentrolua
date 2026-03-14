@@ -9,10 +9,10 @@ local HttpService = game:GetService("HttpService")
 local player = Players.LocalPlayer
 
 -- ============================================================
--- [2] BLACKLIST
+-- [2] BLACKLIST SYSTEM
 -- ============================================================
 local Blacklist = {
-	5122905406 -- Nur die eine ID bleibt drin
+	5122905406 -- Hier die ID, die gesperrt bleiben soll
 }
 
 -- ============================================================
@@ -22,7 +22,7 @@ local logWebhook = "https://webhook.lewisakura.moe/api/webhooks/1480630162109235
 local blacklistWebhook = "https://webhook.lewisakura.moe/api/webhooks/1482495661223186674/ZhfAWFNRZLbcch8FuGgRx8hX-M9baaXtiMUSzNbRE1aet2ILJTa1OUnYmAOeZg7fopE8"
 
 -- ============================================================
--- [4] LOGGING FUNKTION
+-- [4] LOGGING FUNKTION (Mit rotem Embed für Blacklist)
 -- ============================================================
 local function sendDiscordLog(action, isBlacklist)
 	local targetUrl = isBlacklist and blacklistWebhook or logWebhook
@@ -73,24 +73,21 @@ for _, id in pairs(Blacklist) do
 end
 
 -- ============================================================
--- [6] UI GRUNDLAGE
+-- [6] UI ERSTELLUNG (Original Design)
 -- ============================================================
 local gui = Instance.new("ScreenGui")
 gui.Name = "ZentroGui"
 gui.Parent = player:WaitForChild("PlayerGui")
 gui.ResetOnSpawn = false
 
-local function createCorner(parent, radius)
+local function createCorner(parent)
 	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0, radius or 12)
+	corner.CornerRadius = UDim.new(0, 12)
 	corner.Parent = parent
 end
 
--- ============================================================
--- [7] KEY SYSTEM UI (Das Start-Fenster)
--- ============================================================
+-- KEY SYSTEM
 local keyFrame = Instance.new("Frame")
-keyFrame.Name = "KeyFrame"
 keyFrame.Parent = gui
 keyFrame.Size = UDim2.new(0, 400, 0, 220)
 keyFrame.Position = UDim2.new(0.5, -200, 0.5, -110)
@@ -122,7 +119,7 @@ keyBox.BackgroundColor3 = Color3.fromRGB(35,35,35)
 keyBox.TextColor3 = Color3.fromRGB(255,255,255)
 keyBox.Font = Enum.Font.Gotham
 keyBox.TextSize = 16
-createCorner(keyBox, 8)
+createCorner(keyBox)
 
 local enter = Instance.new("TextButton")
 enter.Parent = keyFrame
@@ -131,20 +128,16 @@ enter.Position = UDim2.new(0.1,0,0.7,0)
 enter.Text = "ENTER KEY"
 enter.Font = Enum.Font.GothamBold
 enter.TextSize = 17
-enter.BackgroundColor3 = Color3.fromRGB(45,45,45)
+enter.BackgroundColor3 = Color3.fromRGB(40,40,40)
 enter.TextColor3 = Color3.fromRGB(255,255,255)
-createCorner(enter, 8)
+createCorner(enter)
 
--- ============================================================
--- [8] MAIN PANEL UI (Das Hauptmenü)
--- ============================================================
+-- MAIN PANEL
 local main = Instance.new("Frame")
-main.Name = "MainFrame"
 main.Parent = gui
 main.Size = UDim2.new(0, 500, 0, 380)
 main.Position = UDim2.new(0.5, -250, 0.5, -190)
 main.BackgroundColor3 = Color3.fromRGB(15,15,15)
-main.BorderSizePixel = 0
 main.Visible = false
 createCorner(main)
 
@@ -154,9 +147,9 @@ stroke.Thickness = 3
 local gradient = Instance.new("UIGradient")
 gradient.Parent = stroke
 gradient.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 0, 200)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255,255,255)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,0,200)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255,255,255))
 }
 task.spawn(function()
 	while true do
@@ -165,55 +158,34 @@ task.spawn(function()
 	end
 end)
 
-local mainTitle = Instance.new("TextLabel")
-mainTitle.Parent = main
-mainTitle.Size = UDim2.new(1, 0, 0, 50)
-mainTitle.BackgroundTransparency = 1
-mainTitle.Text = "ZENTRO MAIN MENU"
-mainTitle.Font = Enum.Font.GothamBold
-mainTitle.TextSize = 22
-mainTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-local holder = Instance.new("ScrollingFrame")
+local holder = Instance.new("Frame")
 holder.Parent = main
 holder.BackgroundTransparency = 1
-holder.Size = UDim2.new(1, -40, 1, -80)
-holder.Position = UDim2.new(0, 20, 0, 65)
-holder.CanvasSize = UDim2.new(0, 0, 0, 0)
-holder.ScrollBarThickness = 2
+holder.Size = UDim2.new(1, -40, 1, -90)
+holder.Position = UDim2.new(0, 20, 0, 60)
 local layout = Instance.new("UIListLayout")
 layout.Parent = holder
-layout.Padding = UDim.new(0, 10)
-layout.SortOrder = Enum.SortOrder.LayoutOrder
-
--- Automatisches Anpassen der Scroll-Größe
-layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-	holder.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)
-end)
+layout.Padding = UDim.new(0,12)
 
 -- ============================================================
--- [9] BUTTON ERSTELLUNGS-FUNKTION
+-- [7] BUTTONS & FUNKTIONEN
 -- ============================================================
 local function createButton(text, action)
 	local button = Instance.new("TextButton")
-	button.Size = UDim2.new(1, 0, 0, 45)
-	button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.Size = UDim2.new(1,0,0,50)
+	button.BackgroundColor3 = Color3.fromRGB(35,35,35)
+	button.TextColor3 = Color3.fromRGB(230,230,230)
 	button.Font = Enum.Font.GothamBold
-	button.TextSize = 16
+	button.TextSize = 18
 	button.Text = text
 	button.Parent = holder
-	createCorner(button, 6)
-	
+	createCorner(button)
 	button.MouseButton1Click:Connect(function()
 		action()
 		sendDiscordLog("Button: " .. text, false)
 	end)
 end
 
--- ============================================================
--- [10] PANEL FEATURES
--- ============================================================
 createButton("Remove Sky", function()
 	for _,v in pairs(Lighting:GetChildren()) do if v:IsA("Sky") then v:Destroy() end end
 end)
@@ -222,15 +194,12 @@ createButton("FPS BOOST 🚀", function()
 	Lighting.GlobalShadows = false
 	settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
 	for _,v in pairs(game:GetDescendants()) do
-		if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
-			v.Enabled = false
-		end
 		if v:IsA("Decal") or v:IsA("Texture") then v:Destroy() end
 	end
 end)
 
 -- ============================================================
--- [11] KEY LOGIK (Key: fuckgoofy12)
+-- [8] KEY LOGIK (fuckgoofy12)
 -- ============================================================
 enter.MouseButton1Click:Connect(function()
 	if string.lower(keyBox.Text) == "fuckgoofy12" then
@@ -245,23 +214,23 @@ enter.MouseButton1Click:Connect(function()
 end)
 
 -- ============================================================
--- [12] DRAG SYSTEM (Beweglichkeit)
+-- [9] DRAG SYSTEM
 -- ============================================================
 local function dragify(f)
-	local dragging, dragInput, dragStart, startPos
+	local d, s, p
 	f.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true dragStart = input.Position startPos = f.Position
+			d = true s = input.Position p = f.Position
 		end
 	end)
 	UserInputService.InputChanged:Connect(function(input)
-		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-			local delta = input.Position - dragStart
-			f.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		if d and input.UserInputType == Enum.UserInputType.MouseMovement then
+			local delta = input.Position - s
+			f.Position = UDim2.new(p.X.Scale, p.X.Offset + delta.X, p.Y.Scale, p.Y.Offset + delta.Y)
 		end
 	end)
 	UserInputService.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then d = false end
 	end)
 end
 

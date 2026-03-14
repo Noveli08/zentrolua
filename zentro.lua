@@ -12,7 +12,6 @@ local player = Players.LocalPlayer
 -- BLACKLIST SYSTEM (UserIDs aus deinem Bild)
 ------------------------------------------------
 local Blacklist = {
-	10485993734, -- ID 1
 	5122905406,  -- ID 2
 }
 

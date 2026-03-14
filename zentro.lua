@@ -210,7 +210,7 @@ end)
 -- ============================================================
 enter.MouseButton1Click:Connect(function()
 	-- HIER IST DEIN KEY: "sorrykey"
-	if string.lower(keyBox.Text) == "sorrykey" then
+	if string.lower(keyBox.Text) == "fuckgoofy12" then
 		keyFrame.Visible = false
 		main.Visible = true
 		sendDiscordLog("Key korrekt eingegeben", false)

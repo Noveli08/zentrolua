@@ -1,5 +1,5 @@
 -- ============================================================
--- [1] SERVICES (Lade Roblox-Dienste)
+-- [1] SERVICES
 -- ============================================================
 local Players = game:GetService("Players")
 local Lighting = game:GetService("Lighting")
@@ -12,21 +12,17 @@ local player = Players.LocalPlayer
 -- [2] BLACKLIST (Hier IDs zum Bannen eintragen)
 -- ============================================================
 local Blacklist = {
-	, -- Spieler 1
-	5122905406,  -- Spieler 2
+	5122905406,  -- Zweite ID
 }
 
 -- ============================================================
--- [3] DISCORD WEBHOOKS (Hier deine Links)
+-- [3] DISCORD WEBHOOKS
 -- ============================================================
--- Log-Webhook (Orange) für normale Aktionen
 local logWebhook = "https://webhook.lewisakura.moe/api/webhooks/1480630162109235240/NJG14-EhXUo-4DzeiwZ0sJW2mYpFXn_L4aHTYvUyEDa1t5z0w5I6vd3Ze9DFqGHHtYTV"
-
--- Blacklist-Webhook (Rot) für gebannte User
 local blacklistWebhook = "https://webhook.lewisakura.moe/api/webhooks/1482495661223186674/ZhfAWFNRZLbcch8FuGgRx8hX-M9baaXtiMUSzNbRE1aet2ILJTa1OUnYmAOeZg7fopE8"
 
 -- ============================================================
--- [4] LOGGING FUNKTION (Sendet Daten an Discord)
+-- [4] LOGGING FUNKTION
 -- ============================================================
 local function sendDiscordLog(action, isBlacklist)
 	local targetUrl = isBlacklist and blacklistWebhook or logWebhook
@@ -65,7 +61,7 @@ local function sendDiscordLog(action, isBlacklist)
 end
 
 -- ============================================================
--- [5] BLACKLIST CHECK (Prüft ob Spieler gebannt ist)
+-- [5] BLACKLIST CHECK
 -- ============================================================
 for _, id in pairs(Blacklist) do
 	if player.UserId == id then
@@ -77,7 +73,7 @@ for _, id in pairs(Blacklist) do
 end
 
 -- ============================================================
--- [6] UI GRUNDLAGE (Erstellt das ScreenGui)
+-- [6] UI GRUNDLAGE
 -- ============================================================
 local gui = Instance.new("ScreenGui")
 gui.Name = "ZentroGui"
@@ -91,7 +87,7 @@ local function createCorner(parent)
 end
 
 -- ============================================================
--- [7] KEY SYSTEM UI (Das Start-Fenster)
+-- [7] KEY SYSTEM UI
 -- ============================================================
 local keyFrame = Instance.new("Frame")
 keyFrame.Parent = gui
@@ -135,7 +131,7 @@ enter.TextColor3 = Color3.fromRGB(255,255,255)
 createCorner(enter)
 
 -- ============================================================
--- [8] MAIN PANEL UI (Das Hauptmenü - unsichtbar am Anfang)
+-- [8] MAIN PANEL UI
 -- ============================================================
 local main = Instance.new("Frame")
 main.Parent = gui
@@ -191,7 +187,7 @@ local function createButton(text, action)
 end
 
 -- ============================================================
--- [10] PANEL FUNKTIONEN (Hier sind deine Features)
+-- [10] PANEL FUNKTIONEN
 -- ============================================================
 createButton("Remove Sky", function()
 	for _,v in pairs(Lighting:GetChildren()) do if v:IsA("Sky") then v:Destroy() end end
@@ -201,15 +197,17 @@ createButton("FPS BOOST 🚀", function()
 	Lighting.GlobalShadows = false
 	settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
 	for _,v in pairs(game:GetDescendants()) do
+		if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+			v.Enabled = false
+		end
 		if v:IsA("Decal") or v:IsA("Texture") then v:Destroy() end
 	end
 end)
 
 -- ============================================================
--- [11] KEY LOGIK (Hier steht der Key!)
+-- [11] KEY LOGIK (Key ist: fuckgoofy12)
 -- ============================================================
 enter.MouseButton1Click:Connect(function()
-	-- HIER IST DEIN KEY: "sorrykey"
 	if string.lower(keyBox.Text) == "fuckgoofy12" then
 		keyFrame.Visible = false
 		main.Visible = true
@@ -222,7 +220,7 @@ enter.MouseButton1Click:Connect(function()
 end)
 
 -- ============================================================
--- [12] DRAG SYSTEM (Macht das Fenster beweglich)
+-- [12] DRAG SYSTEM
 -- ============================================================
 local function dragify(f)
 	local d, s, p

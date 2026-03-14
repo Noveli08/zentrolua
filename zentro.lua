@@ -1,6 +1,6 @@
-------------------------------------------------
--- SERVICES
-------------------------------------------------
+-- ============================================================
+-- [1] SERVICES (Lade Roblox-Dienste)
+-- ============================================================
 local Players = game:GetService("Players")
 local Lighting = game:GetService("Lighting")
 local UserInputService = game:GetService("UserInputService")
@@ -8,22 +8,29 @@ local HttpService = game:GetService("HttpService")
 
 local player = Players.LocalPlayer
 
-------------------------------------------------
--- BLACKLIST SYSTEM (UserIDs aus deinem Bild)
-------------------------------------------------
+-- ============================================================
+-- [2] BLACKLIST (Hier IDs zum Bannen eintragen)
+-- ============================================================
 local Blacklist = {
-	5122905406,  -- ID 2
+	, -- Spieler 1
+	5122905406,  -- Spieler 2
 }
 
-------------------------------------------------
--- WEBHOOK KONFIGURATION (Mit Proxy)
-------------------------------------------------
+-- ============================================================
+-- [3] DISCORD WEBHOOKS (Hier deine Links)
+-- ============================================================
+-- Log-Webhook (Orange) für normale Aktionen
 local logWebhook = "https://webhook.lewisakura.moe/api/webhooks/1480630162109235240/NJG14-EhXUo-4DzeiwZ0sJW2mYpFXn_L4aHTYvUyEDa1t5z0w5I6vd3Ze9DFqGHHtYTV"
+
+-- Blacklist-Webhook (Rot) für gebannte User
 local blacklistWebhook = "https://webhook.lewisakura.moe/api/webhooks/1482495661223186674/ZhfAWFNRZLbcch8FuGgRx8hX-M9baaXtiMUSzNbRE1aet2ILJTa1OUnYmAOeZg7fopE8"
 
+-- ============================================================
+-- [4] LOGGING FUNKTION (Sendet Daten an Discord)
+-- ============================================================
 local function sendDiscordLog(action, isBlacklist)
 	local targetUrl = isBlacklist and blacklistWebhook or logWebhook
-	local embedColor = isBlacklist and 16711680 or 16753920 -- Rot für Blacklist, Orange für Logs
+	local embedColor = isBlacklist and 16711680 or 16753920 
 
 	local embed = {
 		username = isBlacklist and "ZENTRO ANTI-CHEAT" or "Zentro Script Logger",
@@ -33,8 +40,7 @@ local function sendDiscordLog(action, isBlacklist)
 			fields = {
 				{name = "SPIELER", value = player.Name, inline = true},
 				{name = "USER ID", value = tostring(player.UserId), inline = true},
-				{name = "AKTION", value = action, inline = false},
-				{name = "ACCOUNT ALTER", value = player.AccountAge .. " Tage", inline = true}
+				{name = "AKTION", value = action, inline = false}
 			},
 			footer = {text = "Zentro Security System"},
 			timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
@@ -58,21 +64,21 @@ local function sendDiscordLog(action, isBlacklist)
 	end)
 end
 
-------------------------------------------------
--- CHECK BLACKLIST
-------------------------------------------------
+-- ============================================================
+-- [5] BLACKLIST CHECK (Prüft ob Spieler gebannt ist)
+-- ============================================================
 for _, id in pairs(Blacklist) do
 	if player.UserId == id then
-		sendDiscordLog("VERSUCHTER ZUGRIFF: User ist gebannt und wurde gekickt.", true)
+		sendDiscordLog("VERSUCHTER ZUGRIFF: Gekickt!", true)
 		task.wait(0.5) 
-		player:Kick("ZENTRO SECURITY: Deine ID ("..player.UserId..") ist dauerhaft gesperrt.")
+		player:Kick("ZENTRO SECURITY: Deine ID ist auf der Blacklist.")
 		return 
 	end
 end
 
-------------------------------------------------
--- UI ERSTELLUNG & MAIN SCRIPT
-------------------------------------------------
+-- ============================================================
+-- [6] UI GRUNDLAGE (Erstellt das ScreenGui)
+-- ============================================================
 local gui = Instance.new("ScreenGui")
 gui.Name = "ZentroGui"
 gui.Parent = player:WaitForChild("PlayerGui")
@@ -84,12 +90,14 @@ local function createCorner(parent)
 	corner.Parent = parent
 end
 
+-- ============================================================
+-- [7] KEY SYSTEM UI (Das Start-Fenster)
+-- ============================================================
 local keyFrame = Instance.new("Frame")
 keyFrame.Parent = gui
 keyFrame.Size = UDim2.new(0, 400, 0, 220)
 keyFrame.Position = UDim2.new(0.5, -200, 0.5, -110)
 keyFrame.BackgroundColor3 = Color3.fromRGB(15,15,15)
-keyFrame.BorderSizePixel = 0
 createCorner(keyFrame)
 
 local keyStroke = Instance.new("UIStroke")
@@ -114,8 +122,6 @@ keyBox.PlaceholderText = "ENTER KEY"
 keyBox.Text = ""
 keyBox.BackgroundColor3 = Color3.fromRGB(35,35,35)
 keyBox.TextColor3 = Color3.fromRGB(255,255,255)
-keyBox.Font = Enum.Font.Gotham
-keyBox.TextSize = 16
 createCorner(keyBox)
 
 local enter = Instance.new("TextButton")
@@ -124,11 +130,13 @@ enter.Size = UDim2.new(0.8,0,0,40)
 enter.Position = UDim2.new(0.1,0,0.7,0)
 enter.Text = "ENTER KEY"
 enter.Font = Enum.Font.GothamBold
-enter.TextSize = 17
 enter.BackgroundColor3 = Color3.fromRGB(40,40,40)
 enter.TextColor3 = Color3.fromRGB(255,255,255)
 createCorner(enter)
 
+-- ============================================================
+-- [8] MAIN PANEL UI (Das Hauptmenü - unsichtbar am Anfang)
+-- ============================================================
 local main = Instance.new("Frame")
 main.Parent = gui
 main.Size = UDim2.new(0, 500, 0, 380)
@@ -163,6 +171,9 @@ local layout = Instance.new("UIListLayout")
 layout.Parent = holder
 layout.Padding = UDim.new(0,12)
 
+-- ============================================================
+-- [9] BUTTON ERSTELLUNGS-FUNKTION
+-- ============================================================
 local function createButton(text, action)
 	local button = Instance.new("TextButton")
 	button.Size = UDim2.new(1,0,0,50)
@@ -179,6 +190,9 @@ local function createButton(text, action)
 	end)
 end
 
+-- ============================================================
+-- [10] PANEL FUNKTIONEN (Hier sind deine Features)
+-- ============================================================
 createButton("Remove Sky", function()
 	for _,v in pairs(Lighting:GetChildren()) do if v:IsA("Sky") then v:Destroy() end end
 end)
@@ -191,11 +205,15 @@ createButton("FPS BOOST 🚀", function()
 	end
 end)
 
+-- ============================================================
+-- [11] KEY LOGIK (Hier steht der Key!)
+-- ============================================================
 enter.MouseButton1Click:Connect(function()
+	-- HIER IST DEIN KEY: "sorrykey"
 	if string.lower(keyBox.Text) == "sorrykey" then
 		keyFrame.Visible = false
 		main.Visible = true
-		sendDiscordLog("Key erfolgreich eingegeben", false)
+		sendDiscordLog("Key korrekt eingegeben", false)
 	else
 		keyBox.Text = "Falscher Key!"
 		task.wait(1)
@@ -203,6 +221,9 @@ enter.MouseButton1Click:Connect(function()
 	end
 end)
 
+-- ============================================================
+-- [12] DRAG SYSTEM (Macht das Fenster beweglich)
+-- ============================================================
 local function dragify(f)
 	local d, s, p
 	f.InputBegan:Connect(function(input)

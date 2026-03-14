@@ -162,7 +162,7 @@ local discord = createButton("Join Discord")
 ------------------------------------------------
 -- KEY SYSTEM
 ------------------------------------------------
-local correctKey = "fuckabdull23"
+local correctKey = "sorrykey"
 
 enter.MouseButton1Click:Connect(function()
 	local entered = string.lower(keyBox.Text:gsub("%s+",""))

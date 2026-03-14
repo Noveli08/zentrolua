@@ -3,200 +3,172 @@
 ------------------------------------------------
 local Players = game:GetService("Players")
 local Lighting = game:GetService("Lighting")
-local HttpService = game:GetService("HttpService")
 local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
-local req = syn and syn.request or http_request or request or (http and http.request)
 
 local gui = Instance.new("ScreenGui")
 gui.Parent = player:WaitForChild("PlayerGui")
 
 ------------------------------------------------
--- KEY SYSTEM FRAME
+-- KEY SYSTEM
 ------------------------------------------------
-
 local keyFrame = Instance.new("Frame")
 keyFrame.Parent = gui
-keyFrame.Size = UDim2.new(0,320,0,180)
-keyFrame.Position = UDim2.new(0.5,-160,0.5,-90)
-keyFrame.BackgroundColor3 = Color3.fromRGB(12,12,18)
+keyFrame.Size = UDim2.new(0, 400, 0, 220) -- größer
+keyFrame.Position = UDim2.new(0.5, -200, 0.5, -110)
+keyFrame.BackgroundColor3 = Color3.fromRGB(15,15,15)
 keyFrame.BorderSizePixel = 0
-Instance.new("UICorner",keyFrame).CornerRadius = UDim.new(0,10)
+Instance.new("UICorner", keyFrame).CornerRadius = UDim.new(0,12)
 
-local title = Instance.new("TextLabel")
-title.Parent = keyFrame
-title.Size = UDim2.new(1,0,0,40)
-title.BackgroundTransparency = 1
-title.Text = "🔑 Zentro Key System"
-title.Font = Enum.Font.GothamBold
-title.TextSize = 20
-title.TextColor3 = Color3.fromRGB(0,255,200)
+local keyStroke = Instance.new("UIStroke")
+keyStroke.Parent = keyFrame
+keyStroke.Thickness = 2
+keyStroke.Color = Color3.fromRGB(255,255,255)
+
+local keyTitle = Instance.new("TextLabel")
+keyTitle.Parent = keyFrame
+keyTitle.Size = UDim2.new(1,0,0,45)
+keyTitle.BackgroundTransparency = 1
+keyTitle.Text = "ZENTRO KEY SYSTEM"
+keyTitle.Font = Enum.Font.GothamBold
+keyTitle.TextSize = 20
+keyTitle.TextColor3 = Color3.fromRGB(255,255,255)
 
 local keyBox = Instance.new("TextBox")
 keyBox.Parent = keyFrame
-keyBox.Size = UDim2.new(0.8,0,0,40)
-keyBox.Position = UDim2.new(0.1,0,0.35,0)
-keyBox.PlaceholderText = "Enter Key..."
+keyBox.Size = UDim2.new(0.8,0,0,45)
+keyBox.Position = UDim2.new(0.1,0,0.38,0)
+keyBox.PlaceholderText = "ENTER KEY"
 keyBox.Text = ""
+keyBox.BackgroundColor3 = Color3.fromRGB(35,35,35)
+keyBox.TextColor3 = Color3.fromRGB(255,255,255)
 keyBox.Font = Enum.Font.Gotham
 keyBox.TextSize = 16
-keyBox.BackgroundColor3 = Color3.fromRGB(20,20,30)
-keyBox.TextColor3 = Color3.fromRGB(255,255,255)
 keyBox.BorderSizePixel = 0
-Instance.new("UICorner",keyBox)
+Instance.new("UICorner", keyBox)
 
 local enter = Instance.new("TextButton")
 enter.Parent = keyFrame
-enter.Size = UDim2.new(0.8,0,0,35)
-enter.Position = UDim2.new(0.1,0,0.65,0)
+enter.Size = UDim2.new(0.8,0,0,40)
+enter.Position = UDim2.new(0.1,0,0.7,0)
 enter.Text = "ENTER KEY"
 enter.Font = Enum.Font.GothamBold
-enter.TextSize = 16
-enter.BackgroundColor3 = Color3.fromRGB(0,255,200)
-enter.TextColor3 = Color3.fromRGB(0,0,0)
-enter.BorderSizePixel = 0
-Instance.new("UICorner",enter)
+enter.TextSize = 17
+enter.BackgroundColor3 = Color3.fromRGB(40,40,40)
+enter.TextColor3 = Color3.fromRGB(255,255,255)
+Instance.new("UICorner", enter)
 
 ------------------------------------------------
--- MAIN MENU
+-- MAIN UI
 ------------------------------------------------
-
 local main = Instance.new("Frame")
 main.Parent = gui
-main.Size = UDim2.new(0,340,0,260)
-main.Position = UDim2.new(0.5,-170,0.5,-130)
-main.BackgroundColor3 = Color3.fromRGB(12,12,18)
+main.Size = UDim2.new(0, 500, 0, 380) -- größer
+main.Position = UDim2.new(0.5, -250, 0.5, -190)
+main.BackgroundColor3 = Color3.fromRGB(15,15,15)
 main.BorderSizePixel = 0
 main.Visible = false
-Instance.new("UICorner",main).CornerRadius = UDim.new(0,10)
+Instance.new("UICorner", main).CornerRadius = UDim.new(0,12)
+
+------------------------------------------------
+-- NEON PINK / WHITE BORDER
+------------------------------------------------
+local stroke = Instance.new("UIStroke")
+stroke.Parent = main
+stroke.Thickness = 3
+
+local gradient = Instance.new("UIGradient")
+gradient.Parent = stroke
+gradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(255,255,255)),
+	ColorSequenceKeypoint.new(0.25, Color3.fromRGB(255,120,255)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,0,200)),
+	ColorSequenceKeypoint.new(0.75, Color3.fromRGB(255,120,255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255,255,255))
+}
+gradient.Rotation = 0
+
+task.spawn(function()
+	while true do
+		gradient.Rotation += 2
+		task.wait(0.01)
+	end
+end)
+
+------------------------------------------------
+-- TITLE & CLOSE BUTTON
+------------------------------------------------
+local title = Instance.new("TextLabel")
+title.Parent = main
+title.Size = UDim2.new(1,0,0,45)
+title.BackgroundTransparency = 1
+title.Text = "ZENTRO PANEL"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.TextColor3 = Color3.fromRGB(255,255,255)
 
 local close = Instance.new("TextButton")
 close.Parent = main
 close.Size = UDim2.new(0,30,0,30)
-close.Position = UDim2.new(1,-35,0,5)
+close.Position = UDim2.new(1,-35,0,8)
 close.Text = "X"
 close.Font = Enum.Font.GothamBold
 close.TextSize = 16
-close.BackgroundColor3 = Color3.fromRGB(30,30,40)
+close.BackgroundColor3 = Color3.fromRGB(35,35,35)
 close.TextColor3 = Color3.fromRGB(255,255,255)
-close.BorderSizePixel = 0
-Instance.new("UICorner",close)
+Instance.new("UICorner", close)
 
 close.MouseButton1Click:Connect(function()
 	main.Visible = false
 end)
 
-local title2 = Instance.new("TextLabel")
-title2.Parent = main
-title2.Size = UDim2.new(1,0,0,40)
-title2.BackgroundTransparency = 1
-title2.Text = "⭐ Zentro SHOP"
-title2.Font = Enum.Font.GothamBold
-title2.TextSize = 20
-title2.TextColor3 = Color3.fromRGB(0,255,200)
-
-local line = Instance.new("Frame")
-line.Parent = main
-line.Size = UDim2.new(1,0,0,2)
-line.Position = UDim2.new(0,0,0,40)
-line.BackgroundColor3 = Color3.fromRGB(0,255,200)
-
+------------------------------------------------
+-- BUTTON HOLDER
+------------------------------------------------
 local holder = Instance.new("Frame")
 holder.Parent = main
 holder.BackgroundTransparency = 1
-holder.Size = UDim2.new(1,-20,1,-60)
-holder.Position = UDim2.new(0,10,0,50)
+holder.Size = UDim2.new(1, -40, 1, -90) -- mehr Platz
+holder.Position = UDim2.new(0, 20, 0, 60)
 
 local layout = Instance.new("UIListLayout")
 layout.Parent = holder
-layout.Padding = UDim.new(0,10)
+layout.Padding = UDim.new(0,12)
 
 ------------------------------------------------
--- BUTTONS
+-- BUTTON CREATOR
 ------------------------------------------------
+local function createButton(text)
+	local button = Instance.new("TextButton")
+	button.Size = UDim2.new(1,0,0,50)
+	button.BackgroundColor3 = Color3.fromRGB(35,35,35)
+	button.TextColor3 = Color3.fromRGB(230,230,230)
+	button.Font = Enum.Font.GothamBold
+	button.TextSize = 18
+	button.Text = text
+	button.BorderSizePixel = 0
+	Instance.new("UICorner", button)
+	button.Parent = holder
+	return button
+end
 
-local removeSky = Instance.new("TextButton")
-removeSky.Parent = holder
-removeSky.Size = UDim2.new(1,0,0,45)
-removeSky.BackgroundColor3 = Color3.fromRGB(20,20,30)
-removeSky.Text = "Remove 🌌 Sky"
-removeSky.Font = Enum.Font.Gotham
-removeSky.TextSize = 17
-removeSky.TextColor3 = Color3.fromRGB(220,220,220)
-Instance.new("UICorner",removeSky)
-
-local removeFog = Instance.new("TextButton")
-removeFog.Parent = holder
-removeFog.Size = UDim2.new(1,0,0,45)
-removeFog.BackgroundColor3 = Color3.fromRGB(20,20,30)
-removeFog.Text = "Remove 🌫 Fog"
-removeFog.Font = Enum.Font.Gotham
-removeFog.TextSize = 17
-removeFog.TextColor3 = Color3.fromRGB(220,220,220)
-Instance.new("UICorner",removeFog)
-
-local clearWeather = Instance.new("TextButton")
-clearWeather.Parent = holder
-clearWeather.Size = UDim2.new(1,0,0,45)
-clearWeather.BackgroundColor3 = Color3.fromRGB(20,20,30)
-clearWeather.Text = "Weather ☀ Clear"
-clearWeather.Font = Enum.Font.Gotham
-clearWeather.TextSize = 17
-clearWeather.TextColor3 = Color3.fromRGB(220,220,220)
-Instance.new("UICorner",clearWeather)
-
-local discord = Instance.new("TextButton")
-discord.Parent = holder
-discord.Size = UDim2.new(1,0,0,45)
-discord.BackgroundColor3 = Color3.fromRGB(20,20,30)
-discord.Text = "JOIN OUR DISCORD"
-discord.Font = Enum.Font.Gotham
-discord.TextSize = 17
-discord.TextColor3 = Color3.fromRGB(220,220,220)
-Instance.new("UICorner",discord)
+local removeSky = createButton("Remove Sky")
+local removeFog = createButton("Remove Fog")
+local clearWeather = createButton("Weather Clear")
+local fpsBoost = createButton("FPS BOOST 🚀")
+local discord = createButton("Join Discord")
 
 ------------------------------------------------
--- KEY SYSTEM + LOGGER
+-- KEY SYSTEM
 ------------------------------------------------
-
 local correctKey = "fuckabdull23"
 
 enter.MouseButton1Click:Connect(function()
-
-	if keyBox.Text == correctKey then
-
-		pcall(function()
-
-			local embed = {
-				["embeds"] = {{
-					["title"] = "⚠️ THIS USER IS USING THE ZENTROSHOP SKY SCRIPT",
-					["color"] = 16776960,
-					["fields"] = {
-
-						{name="USER",value=player.Name,inline=true},
-						{name="USER ID",value=tostring(player.UserId),inline=true},
-						{name="ACCOUNT AGE",value=tostring(player.AccountAge).." days"},
-						{name="GAME ID",value=tostring(game.PlaceId)},
-						{name="SERVER ID",value=tostring(game.JobId)}
-
-					},
-					["footer"] = {["text"]="Zentro Script Logger"}
-				}}
-			}
-
-			req({
-				Url = "https://discord.com/api/webhooks/1480630162109235240/NJG14-EhXUo-4DzeiwZ0sJW2mYpFXn_L4aHTYvUyEDa1t5z0w5I6vd3Ze9DFqGHHtYTV",
-				Method = "POST",
-				Headers = {["Content-Type"]="application/json"},
-				Body = HttpService:JSONEncode(embed)
-			})
-
-		end)
-
+	local entered = string.lower(keyBox.Text:gsub("%s+",""))
+	if entered == string.lower(correctKey) then
 		keyFrame.Visible = false
 		main.Visible = true
-
 	else
 		keyBox.Text = "Wrong Key!"
 		task.wait(1.5)
@@ -207,12 +179,9 @@ end)
 ------------------------------------------------
 -- BUTTON FUNCTIONS
 ------------------------------------------------
-
 removeSky.MouseButton1Click:Connect(function()
 	for _,v in pairs(Lighting:GetChildren()) do
-		if v:IsA("Sky") then
-			v:Destroy()
-		end
+		if v:IsA("Sky") then v:Destroy() end
 	end
 end)
 
@@ -222,73 +191,80 @@ removeFog.MouseButton1Click:Connect(function()
 end)
 
 clearWeather.MouseButton1Click:Connect(function()
-
 	Lighting.FogEnd = 100000
 	Lighting.FogStart = 0
 	Lighting.Brightness = 2
 	Lighting.GlobalShadows = false
 	Lighting.ClockTime = 14
-
 	for _,v in pairs(Lighting:GetChildren()) do
-		if v:IsA("Clouds") then
+		if v:IsA("Clouds") then v:Destroy() end
+	end
+end)
+
+fpsBoost.MouseButton1Click:Connect(function()
+	Lighting.GlobalShadows = false
+	Lighting.FogEnd = 100000
+	settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+	for _,v in pairs(game:GetDescendants()) do
+		if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+			v.Enabled = false
+		end
+		if v:IsA("Decal") or v:IsA("Texture") then
 			v:Destroy()
 		end
 	end
-
 end)
 
 discord.MouseButton1Click:Connect(function()
-	if setclipboard then
-		setclipboard("https://discord.gg/sNmkBMrTJn")
-	end
+	if setclipboard then setclipboard("https://discord.gg/sNmkBMrTJn") end
 end)
 
 ------------------------------------------------
--- DRAGGABLE UI
+-- DRAGGABLE UI (nur außerhalb TextBox)
 ------------------------------------------------
-
 local function dragify(Frame)
-
-	local dragging
-	local dragInput
+	local dragging = false
 	local dragStart
 	local startPos
 
-	local function update(input)
-		local delta = input.Position - dragStart
-		Frame.Position = UDim2.new(
-			startPos.X.Scale,
-			startPos.X.Offset + delta.X,
-			startPos.Y.Scale,
-			startPos.Y.Offset + delta.Y
-		)
-	end
-
 	Frame.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true
-			dragStart = input.Position
-			startPos = Frame.Position
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging = false
-				end
-			end)
+			if UserInputService:GetFocusedTextBox() == nil then
+				dragging = true
+				dragStart = input.Position
+				startPos = Frame.Position
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						dragging = false
+					end
+				end)
+			end
 		end
 	end)
 
 	Frame.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement then
-			dragInput = input
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			local delta = input.Position - dragStart
+			Frame.Position = UDim2.new(
+				startPos.X.Scale,
+				startPos.X.Offset + delta.X,
+				startPos.Y.Scale,
+				startPos.Y.Offset + delta.Y
+			)
 		end
 	end)
 
 	UserInputService.InputChanged:Connect(function(input)
-		if input == dragInput and dragging then
-			update(input)
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			local delta = input.Position - dragStart
+			Frame.Position = UDim2.new(
+				startPos.X.Scale,
+				startPos.X.Offset + delta.X,
+				startPos.Y.Scale,
+				startPos.Y.Offset + delta.Y
+			)
 		end
 	end)
-
 end
 
 dragify(main)

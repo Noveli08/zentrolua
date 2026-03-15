@@ -11,8 +11,7 @@ local player = Players.LocalPlayer
 ------------------------------------------------
 -- BLACKLIST SYSTEM
 ------------------------------------------------
-local blacklistURL = "https://raw.githubusercontent.com/zentroshop3412/blacklist.txt/refs/heads/main/blacklist"
-
+local blacklistURL = "https://raw.githubusercontent.com/zentroshop3412/blacklist.txt/main/blacklist" -- Raw File
 local blacklistWebhook = "https://discord.com/api/webhooks/1482495661223186674/ZhfAWFNRZLbcch8FuGgRx8hX-M9baaXtiMUSzNbRE1aet2ILJTa1OUnYmAOeZg7fopE8"
 
 local function sendBlacklistLog()
@@ -26,9 +25,7 @@ local function sendBlacklistLog()
                 {name = "USER ID", value = tostring(player.UserId), inline = true},
                 {name = "ACTION", value = "Tried to execute Zentro Script", inline = false}
             },
-            footer = {
-                text = "Zentro Security • "..os.date("%H:%M")
-            }
+            footer = { text = "Zentro Security • "..os.date("%H:%M") }
         }}
     }
 
@@ -37,7 +34,7 @@ local function sendBlacklistLog()
         req({
             Url = blacklistWebhook,
             Method = "POST",
-            Headers = {["Content-Type"] = "application/json"},
+            Headers = {["Content-Type"]="application/json"},
             Body = HttpService:JSONEncode(embed)
         })
     end)
@@ -45,12 +42,13 @@ end
 
 task.spawn(function()
     local success, data = pcall(function()
-        return game:HttpGet(blacklistURL)
+        return game:HttpGet(blacklistURL, true) -- true = kein Cache
     end)
 
     if success and data then
-        for id in string.gmatch(data,"%d+") do
-            if tonumber(id) == player.UserId then
+        for line in string.gmatch(data, "[^\r\n]+") do
+            local id = tonumber(line)
+            if id and id == player.UserId then
                 sendBlacklistLog()
                 task.wait(1)
                 player:Kick("Blacklisted from Zentro Script")
@@ -75,9 +73,7 @@ local function sendSauberLog(aktion)
                 {name="USER ID",value=tostring(player.UserId),inline=true},
                 {name="ACTION",value=aktion,inline=false}
             },
-            footer = {
-                text = "Zentro Security • "..os.date("%H:%M")
-            }
+            footer = { text = "Zentro Security • "..os.date("%H:%M") }
         }}
     }
 

@@ -1,0 +1,364 @@
+------------------------------------------------
+-- SERVICES
+------------------------------------------------
+local Players = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+local UserInputService = game:GetService("UserInputService")
+local HttpService = game:GetService("HttpService")
+
+local player = Players.LocalPlayer
+
+------------------------------------------------
+-- UI BASE
+------------------------------------------------
+local gui = Instance.new("ScreenGui")
+gui.Parent = player:WaitForChild("PlayerGui")
+gui.ResetOnSpawn = false
+
+------------------------------------------------
+-- DRAG SYSTEM
+------------------------------------------------
+local function dragify(Frame)
+    local dragToggle
+    local dragInput
+    local dragStart
+    local startPos
+
+    local function update(input)
+        local delta = input.Position - dragStart
+        Frame.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+
+    Frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragToggle = true
+            dragStart = input.Position
+            startPos = Frame.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragToggle = false
+                end
+            end)
+        end
+    end)
+
+    Frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragToggle then
+            update(input)
+        end
+    end)
+end
+
+------------------------------------------------
+-- KEY SYSTEM
+------------------------------------------------
+local keyFrame = Instance.new("Frame",gui)
+keyFrame.Size = UDim2.new(0,400,0,220)
+keyFrame.Position = UDim2.new(0.5,-200,0.5,-110)
+keyFrame.BackgroundColor3 = Color3.fromRGB(15,15,15)
+Instance.new("UICorner",keyFrame).CornerRadius = UDim.new(0,12)
+
+local stroke = Instance.new("UIStroke",keyFrame)
+stroke.Color = Color3.fromRGB(255,255,255)
+stroke.Thickness = 2
+
+local title = Instance.new("TextLabel",keyFrame)
+title.Size = UDim2.new(1,0,0,50)
+title.BackgroundTransparency = 1
+title.Text = "AngelHub Keysystem"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.TextColor3 = Color3.fromRGB(255,255,255)
+
+local keyBox = Instance.new("TextBox",keyFrame)
+keyBox.Size = UDim2.new(0.8,0,0,45)
+keyBox.Position = UDim2.new(0.1,0,0.4,0)
+keyBox.PlaceholderText = "ENTER KEY"
+keyBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+keyBox.TextColor3 = Color3.fromRGB(255,255,255)
+Instance.new("UICorner",keyBox)
+
+local enter = Instance.new("TextButton",keyFrame)
+enter.Size = UDim2.new(0.8,0,0,40)
+enter.Position = UDim2.new(0.1,0,0.7,0)
+enter.Text = "LOGIN"
+enter.BackgroundColor3 = Color3.fromRGB(45,45,45)
+enter.TextColor3 = Color3.fromRGB(255,255,255)
+enter.Font = Enum.Font.GothamBold
+Instance.new("UICorner",enter)
+
+
+------------------------------------------------
+-- MAIN PANEL
+------------------------------------------------
+local border = Instance.new("Frame",gui)
+border.Size = UDim2.new(0,454,0,324)
+border.Position = UDim2.new(0.5,-227,0.5,-162)
+border.Visible = false
+border.BackgroundColor3 = Color3.fromRGB(255,255,255)
+Instance.new("UICorner",border).CornerRadius = UDim.new(0,16)
+
+local gradient = Instance.new("UIGradient",border)
+gradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0,Color3.fromRGB(135,206,250)), -- Himmelblau
+    ColorSequenceKeypoint.new(0.5,Color3.fromRGB(100,149,237)), -- Mittleres Blau
+    ColorSequenceKeypoint.new(1,Color3.fromRGB(135,206,250))  -- Himmelblau
+}
+
+local main = Instance.new("Frame",border)
+main.Size = UDim2.new(0,450,0,320)
+main.Position = UDim2.new(0,2,0,2)
+main.BackgroundColor3 = Color3.fromRGB(20,30,48) -- Dunkelblau für Kontrast
+Instance.new("UICorner",main).CornerRadius = UDim.new(0,15)
+
+------------------------------------------------
+-- TITLE
+------------------------------------------------
+local title = Instance.new("TextLabel", main)
+title.Size = UDim2.new(1,0,0,40)
+title.Position = UDim2.new(0,0,0,5)
+title.BackgroundTransparency = 1
+title.Text = "AngelHub"
+title.TextColor3 = Color3.fromRGB(135,206,250)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 24
+title.TextXAlignment = Enum.TextXAlignment.Center
+
+------------------------------------------------
+-- CLOSE BUTTON
+------------------------------------------------
+local closeBtn = Instance.new("TextButton", main)
+closeBtn.Size = UDim2.new(0,30,0,30)
+closeBtn.Position = UDim2.new(1,-35,0,5)
+closeBtn.BackgroundColor3 = Color3.fromRGB(70,130,180) -- Stahlblau
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 20
+Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0,5)
+
+closeBtn.MouseButton1Click:Connect(function()
+    border.Visible = false
+end)
+
+------------------------------------------------
+-- BUTTON HOLDER
+------------------------------------------------
+local holder = Instance.new("Frame",main)
+holder.Size = UDim2.new(1,-40,1,-70)
+holder.Position = UDim2.new(0,20,0,55)
+holder.BackgroundTransparency = 1
+
+local layout = Instance.new("UIListLayout",holder)
+layout.Padding = UDim.new(0,10)
+
+------------------------------------------------
+-- BUTTON CREATOR
+------------------------------------------------
+local function addBtn(text,callback)
+
+    local b = Instance.new("TextButton",holder)
+    b.Size = UDim2.new(1,0,0,45)
+    b.BackgroundColor3 = Color3.fromRGB(30,60,90) -- Dunkelblau für Buttons
+    b.Text = text
+    b.TextColor3 = Color3.fromRGB(135,206,250) -- Himmelblauer Text
+    b.Font = Enum.Font.GothamBold
+    b.TextSize = 16
+    Instance.new("UICorner",b).CornerRadius = UDim.new(0,8)
+
+    -- Hover-Effekt
+    b.MouseEnter:Connect(function()
+        b.BackgroundColor3 = Color3.fromRGB(40,80,120)
+    end)
+    
+    b.MouseLeave:Connect(function()
+        b.BackgroundColor3 = Color3.fromRGB(30,60,90)
+    end)
+
+    b.MouseButton1Click:Connect(function()
+        callback()
+        sendSauberLog("Button benutzt: "..text)
+    end)
+
+end
+
+-- Beispiel-Buttons
+addBtn("Feature 1", function()
+    print("Feature 1 aktiviert")
+end)
+
+addBtn("Feature 2", function()
+    print("Feature 2 aktiviert")
+end)
+
+addBtn("Feature 3", function()
+    print("Feature 3 aktiviert")
+end)
+
+------------------------------------------------
+-- BUTTONS
+------------------------------------------------
+addBtn("Remove Sky",function()
+
+    for _,v in pairs(Lighting:GetChildren()) do
+        if v:IsA("Sky") then
+            v:Destroy()
+        end
+    end
+
+end)
+
+addBtn("FPS BOOST 🚀",function()
+
+    Lighting.GlobalShadows = false
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+
+    for _,v in pairs(game:GetDescendants()) do
+        if v:IsA("ParticleEmitter") then v.Enabled = false end
+        if v:IsA("Trail") then v.Enabled = false end
+        if v:IsA("Decal") or v:IsA("Texture") then v:Destroy() end
+    end
+
+end)
+
+addBtn("Weather Clear",function()
+    Lighting.ClockTime = 12
+end)
+
+addBtn("Fullbright",function()
+    Lighting.Brightness = 2
+    Lighting.ClockTime = 14
+    Lighting.FogEnd = 100000
+    Lighting.OutdoorAmbient = Color3.fromRGB(128,128,128)
+end)
+
+addBtn("No Fog",function()
+    Lighting.FogEnd = 100000
+    Lighting.FogStart = 0
+end)
+
+addBtn("ESP Players",function()
+    for _,player in pairs(game.Players:GetPlayers()) do
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local esp = Instance.new("BoxHandleAdornment")
+            esp.Size = player.Character.HumanoidRootPart.Size
+            esp.Adornee = player.Character.HumanoidRootPart
+            esp.Color3 = player.TeamColor.Color
+            esp.Transparency = 0.5
+            esp.ZIndex = 10
+            esp.AlwaysOnTop = true
+            esp.Parent = game.Workspace.CurrentCamera
+        end
+    end
+end)
+
+addBtn("Night Vision",function()
+    Lighting.Ambient = Color3.fromRGB(50,50,50)
+    Lighting.Brightness = 3
+    Lighting.ColorShift_Top = Color3.fromRGB(0,255,0)
+    Lighting.ColorShift_Bottom = Color3.fromRGB(0,255,0)
+end)
+
+addBtn("High Quality",function()
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level21
+    Lighting.GlobalShadows = true
+    Lighting.EnvironmentDiffuseScale = 1
+    Lighting.EnvironmentSpecularScale = 1
+end)
+
+addBtn("No Clip",function()
+    local noclip = true
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    
+    if noclip then
+        for _,v in pairs(character:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.CanCollide = false
+            end
+        end
+    end
+end)
+
+addBtn("Aimbot",function()
+    local camera = game.Workspace.CurrentCamera
+    local players = game.Players
+    local localPlayer = players.LocalPlayer
+    local mouse = localPlayer:GetMouse()
+    
+    _G.aimbotEnabled = not _G.aimbotEnabled
+    
+    local function getClosestPlayer()
+        local closestPlayer = nil
+        local shortestDistance = math.huge
+        
+        for _, player in pairs(players:GetPlayers()) do
+            if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                local distance = (player.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude
+                if distance < shortestDistance then
+                    shortestDistance = distance
+                    closestPlayer = player
+                end
+            end
+        end
+        
+        return closestPlayer
+    end
+    
+    game:GetService("RunService").RenderStepped:Connect(function()
+        if _G.aimbotEnabled and mouse.Button1Down then
+            local target = getClosestPlayer()
+            if target and target.Character:FindFirstChild("Head") then
+                camera.CFrame = CFrame.new(camera.CFrame.Position, target.Character.Head.Position)
+            end
+        end
+    end)
+end)
+
+addBtn("Remove Effects",function()
+    for _,v in pairs(game:GetDescendants()) do
+        if v:IsA("ParticleEmitter") or v:IsA("Fire") or v:IsA("Smoke") or v:IsA("Sparkles") then
+            v:Destroy()
+        end
+    end
+    
+    Lighting.Bloom.Enabled = false
+    Lighting.ColorCorrection.Enabled = false
+    Lighting.SunRays.Enabled = false
+    Lighting.DepthOfField.Enabled = false
+    Lighting.Blur.Enabled = false
+end)
+
+addBtn("Remove Water",function()
+    for _,v in pairs(workspace:GetDescendants()) do
+        if v:IsA("Part") and v.Name:lower():find("water") or v.Material == Enum
+
+
+------------------------------------------------
+-- KEY CHECK
+------------------------------------------------
+enter.MouseButton1Click:Connect(function()
+
+    if keyBox.Text == "StarsToBeBorn" then
+        keyFrame.Visible = false
+        border.Visible = true
+        sendSauberLog("Key erfolgreich eingegeben")
+    else
+        keyBox.Text = "WRONG KEY"
+        task.wait(1)
+        keyBox.Text = ""
+    end
+
+end)

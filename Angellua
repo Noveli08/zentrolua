@@ -1,0 +1,380 @@
+------------------------------------------------
+-- SERVICES
+------------------------------------------------
+local Players = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+------------------------------------------------
+-- GUI BASE
+------------------------------------------------
+local gui = Instance.new("ScreenGui")
+gui.Parent = playerGui
+gui.ResetOnSpawn = false
+
+------------------------------------------------
+-- CLICK SOUND
+------------------------------------------------
+local clickSound = Instance.new("Sound", gui)
+clickSound.SoundId = "rbxassetid://911342077" -- Plopp Sound
+clickSound.Volume = 1
+local function playClick()
+    clickSound:Play()
+end
+
+------------------------------------------------
+-- DRAG FUNCTION
+------------------------------------------------
+local function dragify(Frame)
+    local dragToggle, dragStart, startPos
+    Frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragToggle = true
+            dragStart = input.Position
+            startPos = Frame.Position
+        end
+    end)
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragToggle = false
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(input)
+        if dragToggle then
+            local delta = input.Position - dragStart
+            Frame.Position = UDim2.new(
+                startPos.X.Scale,
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale,
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end)
+end
+
+------------------------------------------------
+-- INTRO
+------------------------------------------------
+local blurEffect = Instance.new("BlurEffect", Lighting)
+blurEffect.Size = 0
+
+local introGui = Instance.new("ScreenGui", playerGui)
+local introText = Instance.new("TextLabel", introGui)
+introText.Text = "WELCOME TO ANGEL HUB"
+introText.Size = UDim2.new(0.4,0,0.1,0)
+introText.Position = UDim2.new(0.5,0,0.5,0)
+introText.AnchorPoint = Vector2.new(0.5,0.5)
+introText.BackgroundTransparency = 1
+introText.TextScaled = true
+introText.Font = Enum.Font.GothamBold
+introText.TextColor3 = Color3.fromRGB(255,0,0)
+introText.TextTransparency = 0.5
+
+TweenService:Create(blurEffect,TweenInfo.new(1),{Size=20}):Play()
+TweenService:Create(introText,TweenInfo.new(1),{TextTransparency=0}):Play()
+task.wait(3)
+TweenService:Create(introText,TweenInfo.new(1),{TextTransparency=1}):Play()
+TweenService:Create(blurEffect,TweenInfo.new(1),{Size=0}):Play()
+task.wait(1)
+introGui:Destroy()
+blurEffect:Destroy()
+
+------------------------------------------------
+-- KEY SYSTEM
+------------------------------------------------
+local keyFrame = Instance.new("Frame", gui)
+keyFrame.Size = UDim2.new(0,400,0,200)
+keyFrame.Position = UDim2.new(0.5,-200,0.5,-100)
+keyFrame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+Instance.new("UICorner", keyFrame)
+dragify(keyFrame)
+
+local keyStroke = Instance.new("UIStroke", keyFrame)
+keyStroke.Color = Color3.fromRGB(255,0,0)
+keyStroke.Thickness = 2
+
+local keyTitle = Instance.new("TextLabel", keyFrame)
+keyTitle.Size = UDim2.new(1,0,0,40)
+keyTitle.BackgroundTransparency = 1
+keyTitle.Text = "Angel Key System"
+keyTitle.TextColor3 = Color3.fromRGB(255,0,0)
+keyTitle.Font = Enum.Font.GothamBold
+keyTitle.TextSize = 20
+
+local keyBox = Instance.new("TextBox", keyFrame)
+keyBox.Size = UDim2.new(0.8,0,0,40)
+keyBox.Position = UDim2.new(0.1,0,0.4,0)
+keyBox.PlaceholderText = "Enter Key"
+keyBox.BackgroundColor3 = Color3.fromRGB(40,40,40)
+keyBox.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", keyBox)
+
+local enter = Instance.new("TextButton", keyFrame)
+enter.Size = UDim2.new(0.8,0,0,40)
+enter.Position = UDim2.new(0.1,0,0.7,0)
+enter.Text = "Login"
+enter.BackgroundColor3 = Color3.fromRGB(60,0,0)
+enter.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", enter)
+
+------------------------------------------------
+-- MAIN PANEL
+------------------------------------------------
+local main = Instance.new("Frame", gui)
+main.Size = UDim2.new(0,450,0,300)
+main.Position = UDim2.new(0.5,-225,0.5,-150)
+main.BackgroundColor3 = Color3.fromRGB(25,25,35)
+Instance.new("UICorner", main)
+dragify(main)
+main.Visible = false
+
+local stroke = Instance.new("UIStroke", main)
+stroke.Color = Color3.fromRGB(255,0,0)
+stroke.Thickness = 2
+
+local title = Instance.new("TextLabel", main)
+title.Size = UDim2.new(1,0,0,40)
+title.Position = UDim2.new(0,0,0,5)
+title.BackgroundTransparency = 1
+title.Text = "ANGEL HUB"
+title.TextColor3 = Color3.fromRGB(255,0,0)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 24
+
+------------------------------------------------
+-- MINI BUTTON (X -> Kreis)
+------------------------------------------------
+local mini = Instance.new("TextButton", gui)
+mini.Size = UDim2.new(0,50,0,50)
+mini.Position = main.Position
+mini.BackgroundColor3 = Color3.fromRGB(40,0,0)
+mini.Text = "A"
+mini.TextColor3 = Color3.new(1,1,1)
+mini.Visible = false
+local miniCorner = Instance.new("UICorner", mini)
+miniCorner.CornerRadius = UDim.new(1,0)
+local miniStroke = Instance.new("UIStroke", mini)
+miniStroke.Color = Color3.fromRGB(255,0,0)
+miniStroke.Thickness = 2
+dragify(mini)
+
+------------------------------------------------
+-- TOGGLE BUTTON X
+------------------------------------------------
+local toggle = Instance.new("TextButton", main)
+toggle.Size = UDim2.new(0,30,0,30)
+toggle.Position = UDim2.new(1,-35,0,5)
+toggle.Text = "X"
+toggle.BackgroundColor3 = Color3.fromRGB(40,0,0)
+toggle.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", toggle)
+
+local function minimizePanel()
+    playClick()
+    TweenService:Create(main,TweenInfo.new(0.3),{Size=UDim2.new(0,0,0,0)}):Play()
+    TweenService:Create(main,TweenInfo.new(0.3),{Position=mini.Position}):Play()
+    task.wait(0.3)
+    main.Visible = false
+    mini.Visible = true
+end
+
+toggle.MouseButton1Click:Connect(minimizePanel)
+mini.MouseButton1Click:Connect(function()
+    playClick()
+    mini.Visible = false
+    main.Visible = true
+    TweenService:Create(main,TweenInfo.new(0.3),{Size=UDim2.new(0,450,0,300)}):Play()
+end)
+
+------------------------------------------------
+-- SCROLL HOLDER
+------------------------------------------------
+local holder = Instance.new("ScrollingFrame", main)
+holder.Size = UDim2.new(1,-20,1,-60)
+holder.Position = UDim2.new(0,10,0,50)
+holder.BackgroundTransparency = 1
+holder.CanvasSize = UDim2.new(0,0,0,0)
+holder.ScrollBarThickness = 4
+
+local layout = Instance.new("UIListLayout", holder)
+layout.Padding = UDim.new(0,8)
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    holder.CanvasSize = UDim2.new(0,0,0,layout.AbsoluteContentSize.Y + 10)
+end)
+
+------------------------------------------------
+-- TOGGLE BUTTON FUNCTION
+------------------------------------------------
+local function addBtn(text,onFunc,offFunc)
+    local b = Instance.new("TextButton", holder)
+    b.Size = UDim2.new(1,0,0,40)
+    b.BackgroundColor3 = Color3.fromRGB(40,40,60)
+    b.Text = text
+    b.TextColor3 = Color3.new(1,1,1)
+    Instance.new("UICorner", b)
+    local state = false
+    b.MouseButton1Click:Connect(function()
+        playClick()
+        state = not state
+        if state then
+            b.BackgroundColor3 = Color3.fromRGB(120,0,0)
+            onFunc()
+        else
+            b.BackgroundColor3 = Color3.fromRGB(40,40,60)
+            if offFunc then offFunc() end
+        end
+    end)
+end
+
+------------------------------------------------
+-- FEATURES
+------------------------------------------------
+addBtn("Fullbright",
+function()
+    Lighting.Brightness = 10
+    Lighting.Ambient = Color3.new(1,1,1)
+end,
+function()
+    Lighting.Brightness = 1
+    Lighting.Ambient = Color3.new(0.5,0.5,0.5)
+end)
+
+addBtn("No Fog",
+function()
+    Lighting.FogEnd = 9999999
+end,
+function()
+    Lighting.FogEnd = 1000
+end)
+
+addBtn("Remove Sky",
+function()
+    for _,v in pairs(Lighting:GetChildren()) do
+        if v:IsA("Sky") then v:Destroy() end
+    end
+end)
+
+------------------------------------------------
+-- OG SNIPER 🔫 (FIXED)
+------------------------------------------------
+local noScopeConn
+local ogEnabled = false
+local originalFOV = workspace.CurrentCamera.FieldOfView
+
+addBtn("OG Sniper 🔫",
+function()
+    ogEnabled = true
+
+    local camera = workspace.CurrentCamera
+    originalFOV = camera.FieldOfView
+
+    noScopeConn = RunService.RenderStepped:Connect(function()
+        if not ogEnabled then return end
+
+        local char = player.Character
+        if not char then return end
+
+        local tool = char:FindFirstChildOfClass("Tool")
+        if tool and tool.Name:lower():find("sniper") then
+
+            -- Scope nur EINMAL entfernen
+            if tool:GetAttribute("ScopeRemoved") ~= true then
+                tool:SetAttribute("ScopeRemoved", true)
+
+                if tool:FindFirstChild("Scope") then
+                    tool.Scope:Destroy()
+                end
+
+                tool:SetAttribute("Scope", false)
+            end
+
+            -- FOV nur setzen wenn nötig
+            if camera.FieldOfView ~= 70 then
+                camera.FieldOfView = 70
+            end
+        end
+    end)
+end,
+
+function()
+    ogEnabled = false
+
+    if noScopeConn then
+        noScopeConn:Disconnect()
+        noScopeConn = nil
+    end
+
+    -- FOV reset sauber
+    workspace.CurrentCamera.FieldOfView = originalFOV
+end)
+
+------------------------------------------------
+-- AIMBOT / AIMLOCK 🎯
+------------------------------------------------
+local aimEnabled = false
+local aimConn
+
+addBtn("Aimlock 🎯",
+function()
+    aimEnabled = true
+
+    aimConn = RunService.RenderStepped:Connect(function()
+        if not aimEnabled then return end
+
+        local character = player.Character
+        if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+
+        local closestPlayer = nil
+        local shortestDistance = math.huge
+
+        for _, p in pairs(Players:GetPlayers()) do
+            if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                local dist = (p.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Magnitude
+                if dist < shortestDistance then
+                    shortestDistance = dist
+                    closestPlayer = p
+                end
+            end
+        end
+
+        if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("Head") then
+            local mouse = player:GetMouse()
+
+            if mouse.Button1Down then
+                workspace.CurrentCamera.CFrame = CFrame.new(
+                    workspace.CurrentCamera.CFrame.Position,
+                    closestPlayer.Character.Head.Position
+                )
+            end
+        end
+    end)
+end,
+
+function()
+    aimEnabled = false
+
+    if aimConn then
+        aimConn:Disconnect()
+        aimConn = nil
+    end
+end)
+
+------------------------------------------------
+-- KEY CHECK
+------------------------------------------------
+enter.MouseButton1Click:Connect(function()
+    playClick()
+    if keyBox.Text == "StarsToBeBorn" then
+        keyFrame.Visible = false
+        main.Visible = true
+    else
+        keyBox.Text = "Wrong"
+        task.wait(1)
+        keyBox.Text = ""
+    end
+end)

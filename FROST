@@ -1,0 +1,1614 @@
+-- [[ SKY NOVA - ONLY LOADER ]]
+
+-- Verhindert Mehrfachausf체hrung
+if _G.SkyNovaLoading then return end
+_G.SkyNovaLoading = true
+
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
+
+-- 1. UI Erstellen
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "FrostSimpleLoader"
+ScreenGui.Parent = CoreGui
+ScreenGui.IgnoreGuiInset = true -- F체llt den ganzen Bildschirm
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(1, 0, 1, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10) -- Dunkles Design
+MainFrame.BorderSizePixel = 0
+MainFrame.Parent = ScreenGui
+
+local StatusText = Instance.new("TextLabel")
+StatusText.Size = UDim2.new(0, 400, 0, 50)
+StatusText.Position = UDim2.new(0.5, -200, 0.5, -25)
+StatusText.BackgroundTransparency = 1
+StatusText.TextColor3 = Color3.fromRGB(255, 255, 255)
+StatusText.TextSize = 35
+StatusText.Font = Enum.Font.GothamBold
+StatusText.Text = "FROST"
+StatusText.TextTransparency = 1 -- Startet unsichtbar
+StatusText.Parent = MainFrame
+
+local SubText = Instance.new("TextLabel")
+SubText.Size = UDim2.new(0, 400, 0, 50)
+SubText.Position = UDim2.new(0.5, -200, 0.5, 20)
+SubText.BackgroundTransparency = 1
+SubText.TextColor3 = Color3.fromRGB(150, 150, 150)
+SubText.TextSize = 18
+SubText.Font = Enum.Font.Gotham
+SubText.Text = "official script loading..."
+SubText.TextTransparency = 1
+SubText.Parent = MainFrame
+
+-- 2. Animations-Ablauf
+local function StartAnimation()
+    -- Einblenden
+    TweenService:Create(StatusText, TweenInfo.new(1), {TextTransparency = 0}):Play()
+    task.wait(0.5)
+    TweenService:Create(SubText, TweenInfo.new(1), {TextTransparency = 0}):Play()
+    
+    task.wait(2.5) -- Wartezeit f체r den "Loading"-Effekt
+    
+    -- Text 채ndern kurz vor Ende
+    SubText.Text = "ready!"
+    task.wait(0.8)
+    
+    -- Ausblenden
+    TweenService:Create(StatusText, TweenInfo.new(0.8), {TextTransparency = 1}):Play()
+    TweenService:Create(SubText, TweenInfo.new(0.8), {TextTransparency = 1}):Play()
+    task.wait(0.5)
+    TweenService:Create(MainFrame, TweenInfo.new(1), {BackgroundTransparency = 1}):Play()
+    
+    task.wait(1)
+    ScreenGui:Destroy()
+    _G.FrostLoading = false
+end
+
+-- Start
+StartAnimation()-- [[ SKY NOVA PROTECTION ]]
+local creator = "7vttjmhxkc-sketch"
+local version = "1.0.0"
+
+print([[ 
+  ___ _  ____   __  _  _  _____   __ _ 
+ / __| |/ /\ \ / / | \| |/ _ \ \ / // _\
+ \__ \ ' <  \ V /  | .` | (_) \ V /| (_|
+ |___/_|\_\  |_|   |_|\_|\___/ \_/  \__\
+   Created by ]] .. creator .. [[ | v]] .. version .. [[
+]])
+
+if _G.FROSTLoaded then 
+    warn("Frost ist bereits geladen!") 
+    return 
+end
+_G.FrostLoaded = truelocal WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+local HttpService = game:GetService("HttpService")
+local Lighting = game:GetService("Lighting")
+local skyInstance = Lighting:FindFirstChildOfClass("Sky")
+local vu = game:GetService("VirtualUser")
+local repStorage = game:GetService("ReplicatedStorage")
+
+function updateconfig()
+    writefile("WindUI/BetterEH/values.json", HttpService:JSONEncode({
+        Skys = Skys,
+        WeaponSkins = WeaponSkins,
+        GearSkins = GearSkins
+    }))
+end
+
+local function getDefaultConfig()
+    return {
+        Skys = {
+            ["bloudred"] = {
+                SkyboxBk = "rbxassetid://126944775797063",
+                SkyboxDn = "rbxassetid://94190734796082",
+                SkyboxFt = "rbxassetid://90546017435179",
+                SkyboxLf = "rbxassetid://109838453114563",
+                SkyboxRt = "rbxassetid://94190734796082",
+                SkyboxUp = "rbxassetid://126944775797063"
+            },
+            ["Purple Thing"] = {
+                SkyboxBk = "rbxassetid://16553658937",
+                SkyboxDn = "rbxassetid://16553660713",
+                SkyboxFt = "rbxassetid://16553662144",
+                SkyboxLf = "rbxassetid://16553664042",
+                SkyboxRt = "rbxassetid://16553665766",
+                SkyboxUp = "rbxassetid://16553667750"
+            },
+            ["Aurora"] = {
+                SkyboxBk = "rbxassetid://128600713462148",
+                SkyboxDn = "rbxassetid://129205524771926",
+                SkyboxFt = "rbxassetid://91295549823939",
+                SkyboxLf = "rbxassetid://78049621027692",
+                SkyboxRt = "rbxassetid://97339481871314",
+                SkyboxUp = "rbxassetid://85412515491070"
+            },
+            ["Orange"] = {
+                SkyboxBk = "rbxassetid://75806894209584",
+                SkyboxDn = "rbxassetid://88955070832523",
+                SkyboxFt = "rbxassetid://137588397191887",
+                SkyboxLf = "rbxassetid://124955584991258",
+                SkyboxRt = "rbxassetid://140343245463200",
+                SkyboxUp = "rbxassetid://134383800716949"
+            },
+            ["Moonlight"] = {
+                SkyboxBk = "rbxassetid://116261899350523",
+                SkyboxDn = "rbxassetid://92257816837512",
+                SkyboxFt = "rbxassetid://108326981730305",
+                SkyboxLf = "rbxassetid://131834280163741",
+                SkyboxRt = "rbxassetid://99525277797873",
+                SkyboxUp = "rbxassetid://125425274451894"
+            },
+            ["galaxy"] = {
+                SkyboxBk = "rbxassetid://159454299",
+                SkyboxDn = "rbxassetid://159454296",
+                SkyboxFt = "rbxassetid://159454293",
+                SkyboxLf = "rbxassetid://159454286",
+                SkyboxRt = "rbxassetid://159454300",
+                SkyboxUp = "rbxassetid://159454288"
+            }
+            
+                      
+        },
+        WeaponSkins = {
+            Blood = { primary = "rbxassetid://122271132142798", secondary = "rbxassetid://87911546375139" },
+            Gold = { primary = "rbxassetid://102006781490148", secondary = "rbxassetid://102006781490148" },
+            Galaxy = { primary = "rbxassetid://122271132142798", secondary = "rbxassetid://83994660888462" },
+            Black = { primary = "rbxassetid://122271132142798", secondary = "rbxassetid://122271132142798" },
+            Devil = { primary = "rbxassetid://81551553428680", secondary = "rbxassetid://81551553428680" },
+            Ozean = { primary = "rbxassetid://138912737283012", secondary = "rbxassetid://138912737283012" },
+            green = { primary = "rbxassetid://76213908980700", secondary =   "rbxassetid://76213908980700" }
+        },
+        GearSkins = {
+            Black = "rbxassetid://122271132142798",
+            Gold = "rbxassetid://102006781490148",
+            Devil = "rbxassetid://81551553428680",
+            Ozean = "rbxassetid://138912737283012",
+            Galaxy = "rbxassetid://122271132142798",
+            green =  "rbxassetid://76213908980700"
+        },
+        CustomSounds = {
+            Minecraft = "rbxassetid://8766809464",
+            Simple = "rbxassetid://3748776946",
+            Bing = "rbxassetid://6607204501",
+            Skeet = "rbxassetid://5633695679",
+            Rust = "rbxassetid://1255040462",
+            Pick = "rbxassetid://1347140027",
+            Shine = "rbxassetid://5693220817",
+            Neverlose = "rbxassetid://8679627751",
+            Metal = "rbxassetid://8917041751",
+            Shield = "rbxassetid://140073271098075",                                                                
+            Headshot = "rbxassetid://2513174484",
+            Grrr = "rbxassetid://8603227350", 
+            Rizz = "rbxassetid://89848519630209",
+            Mommy = "rbxassetid://90759147003294",
+            kid = "rbxassetid://108774056375939",
+            kid2 = "rbxassetid://72509238430690"
+        }
+    }
+end
+
+if not isfolder("Better Eh") then
+    makefolder("Better Eh")
+end
+
+local success, config = pcall(function()
+    if isfile("WindUI/BetterEH/values.json") then
+        return HttpService:JSONDecode(readfile("WindUI/BetterEH/values.json"))
+    end
+end)
+
+if not success or not config or not config.Skys or not config.WeaponSkins or not config.GearSkins or not config.CustomSounds then
+    config = getDefaultConfig()
+    updateconfig()
+end
+
+Skys = config.Skys
+WeaponSkins = config.WeaponSkins
+GearSkins = config.GearSkins
+CustomSounds = config.CustomSounds
+
+local Window = WindUI:CreateWindow({
+    Title = "Frost",
+    Icon = "crown",
+    Author = "changed by noveli for mo",
+    Folder = "BetterEH",
+    Resizable = false,
+})
+
+local ConfigManager = Window.ConfigManager
+
+WindUI:AddTheme({
+    Name = "BetterEH",
+
+    Accent = WindUI:Gradient({
+        ["0"] = { Color = Color3.fromHex("#ff00cc"), Transparency = 0 },
+        ["100"] = { Color = Color3.fromHex("#00f5ff"), Transparency = 0 },
+    }, {
+        Rotation = 35,
+    }),
+
+    Background = Color3.fromHex("#050510"),
+    BackgroundTransparency = 0,
+
+    Outline = Color3.fromHex("#1b1b3a"),
+    Text = Color3.fromHex("#f2f2ff"),
+    Placeholder = Color3.fromHex("#6b6b8f"),
+
+    Button = Color3.fromHex("#0b0b1f"),
+    Icon = Color3.fromHex("#00f5ff"),
+
+    Hover = Color3.fromHex("#14143a"),
+
+    WindowBackground = WindUI:Gradient({
+        ["0"]   = { Color = Color3.fromHex("#02010a"), Transparency = 0 },
+        ["100"] = { Color = Color3.fromHex("#0a0a2a"), Transparency = 0 },
+    }, {
+        Rotation = 45,
+    }),
+
+    WindowShadow = Color3.fromHex("#000000"),
+
+    DialogBackground = Color3.fromHex("#050510"),
+    DialogBackgroundTransparency = 0,
+    DialogTitle = Color3.fromHex("#ffffff"),
+    DialogContent = Color3.fromHex("#c9c9ff"),
+    DialogIcon = Color3.fromHex("#ff00cc"),
+
+    WindowTopbarButtonIcon = Color3.fromHex("#00f5ff"),
+    WindowTopbarTitle = Color3.fromHex("#ffffff"),
+    WindowTopbarAuthor = Color3.fromHex("#ff00cc"),
+    WindowTopbarIcon = Color3.fromHex("#7df9ff"),
+
+    TabBackground = Color3.fromHex("#04041a"),
+    TabTitle = Color3.fromHex("#e6e6ff"),
+    TabIcon = Color3.fromHex("#00f5ff"),
+
+    ElementBackground = Color3.fromHex("#06061a"),
+    ElementTitle = Color3.fromHex("#ffffff"),
+    ElementDesc = Color3.fromHex("#a3a3ff"),
+    ElementIcon = Color3.fromHex("#ff00cc"),
+
+    PopupBackground = Color3.fromHex("#0a0a22"),
+    PopupBackgroundTransparency = 0,
+    PopupTitle = Color3.fromHex("#ffffff"),
+    PopupContent = Color3.fromHex("#d6d6ff"),
+    PopupIcon = Color3.fromHex("#00f5ff"),
+
+    Toggle = WindUI:Gradient({
+        ["0"] = { Color = Color3.fromHex("#ff00cc"), Transparency = 0 },
+        ["100"] = { Color = Color3.fromHex("#00f5ff"), Transparency = 0 },
+    }, {
+        Rotation = 90,
+    }),
+
+    ToggleBar = Color3.fromHex("#0a0a1f"),
+
+    Checkbox = Color3.fromHex("#141433"),
+    CheckboxIcon = Color3.fromHex("#ffffff"),
+
+    Slider = WindUI:Gradient({
+        ["0"] = { Color = Color3.fromHex("#ff00cc"), Transparency = 0 },
+        ["100"] = { Color = Color3.fromHex("#00f5ff"), Transparency = 0 },
+    }, {
+        Rotation = 0,
+    }),
+
+    SliderThumb = Color3.fromHex("#ffffff"),
+})
+
+WindUI:SetTheme("BetterEH")
+
+Window:SetToggleKey(Enum.KeyCode.K)
+
+Window:DisableTopbarButtons({
+    "Fullscreen",
+})
+
+local firstclose = true
+Window:OnClose(function()
+    if firstclose then
+        WindUI:Notify({
+            Title = "Info",
+            Content = "Use 'K' to toggle UI",
+            Duration = 5,
+            Icon = "info",
+        })
+        firstclose = false
+    end
+end)
+
+enviorment = Window:Tab({
+    Title = "Enviorment",
+    Icon = "mountain-snow",
+})
+
+local skystate
+local currentsky
+local stdsky
+local skylist = {}
+
+local fullbrightState
+local fullbrightConnection
+local originalLighting
+
+local freezeTime = false
+local frozenTime = Lighting.ClockTime
+
+local timeConnection
+
+for name, _ in pairs(Skys) do
+    table.insert(skylist, name)
+end
+
+local function updatesky()
+    if skystate and currentsky and Skys[currentsky] then
+        local data = Skys[currentsky]
+
+        if not stdsky then
+            stdsky = {}
+            for _, prop in pairs({
+                "SkyboxBk", "SkyboxDn", "SkyboxFt",
+                "SkyboxLf", "SkyboxRt", "SkyboxUp",
+                "SunTextureId", "MoonTextureId"
+            }) do
+                stdsky[prop] = skyInstance[prop]
+            end
+        end
+
+        for prop, value in pairs(data) do
+            skyInstance[prop] = value
+        end
+
+        if not skyconnection then
+            skyconnection = RunService.RenderStepped:Connect(function()
+                if skystate then
+                    skyInstance.SunTextureId = ""
+                    skyInstance.MoonTextureId = ""
+                end
+            end)
+        end
+
+    else
+        if stdsky then
+            for prop, value in pairs(stdsky) do
+                skyInstance[prop] = value
+            end
+        end
+
+        if skyconnection then
+            skyconnection:Disconnect()
+            skyconnection = nil
+        end
+    end
+end
+
+enviorment:Toggle({
+    Title = "Custom Sky",
+    Flag = "sky",
+    Callback = function(state)
+        skystate = state
+        updatesky()
+    end
+})
+
+Skyselector = enviorment:Dropdown({
+    Title = "Skys",
+    Desc = "list of ur skys",
+    Values = skylist,
+    Multi = false,
+    AllowNone = true,
+    Flag = "skydrop",
+    Callback = function(option)
+        currentsky = option
+        updatesky()
+    end
+})
+
+skyinput = enviorment:Input({
+    Title = "Import Sky",
+    Placeholder = 'skybox json . . .',
+    Type = "Input",
+    Callback = function(input)
+        if input == "" then
+            return
+        end
+
+        local success, result = pcall(function()
+            return HttpService:JSONDecode(input)
+        end)
+
+        if not success then
+            WindUI:Notify({
+                Title = "ERROR",
+                Content = "Not a valid json",
+                Duration = 3,
+                Icon = "triangle-alert",
+            })
+            skyinput:Set("")
+            return
+        end
+
+        local addedNames = {}
+
+        for name, sky in pairs(result) do
+            if type(sky) ~= "table" then
+                WindUI:Notify({
+                    Title = "ERROR",
+                    Content = "Not a valid json",
+                    Duration = 3,
+                    Icon = "triangle-alert",
+                })
+                skyinput:Set("")
+                return
+            end
+
+            if not (sky.SkyboxUp and sky.SkyboxRt and sky.SkyboxLf and sky.SkyboxFt and sky.SkyboxBk and sky.SkyboxDn) then
+                WindUI:Notify({
+                    Title = "ERROR",
+                    Content = "Not a valid json",
+                    Duration = 3,
+                    Icon = "triangle-alert",
+                })
+                skyinput:Set("")
+                return
+            end
+
+            Skys[name] = sky
+            table.insert(addedNames, name)
+        end
+
+        skylist = {}
+        for name, _ in pairs(Skys) do
+            table.insert(skylist, name)
+        end
+
+        Skyselector:Refresh(skylist)
+
+        updateconfig()
+
+        skyinput:Set("")
+
+        WindUI:Notify({
+            Title = "SUCCESS",
+            Content = table.concat(addedNames, ", ") .. " got added",
+            Duration = 3,
+            Icon = "badge-check",
+        })
+    end
+})
+
+enviorment:Button({
+    Title = "No Disturbance",
+    Desc = "Delete Atmosphere & SunRays",
+    Callback = function()
+        local atm = game:GetService("Lighting"):FindFirstChildOfClass("Atmosphere")
+        if atm then
+            atm:Destroy()
+        end
+
+        local sunRays = game:GetService("Lighting"):FindFirstChildOfClass("SunRaysEffect")
+        if sunRays then
+            sunRays:Destroy()
+        end
+
+        WindUI:Notify({
+            Title = "Info",
+            Content = "Disturbance Removed",
+            Duration = 5,
+            Icon = "info",
+        })
+    end
+})
+
+enviorment:Toggle({
+    Title = "FullBright",
+    Flag = "fullbright",
+    Callback = function(state)
+        fullbrightState = state
+
+        if state then
+            if not originalLighting then
+                originalLighting = {
+                    Brightness = Lighting.Brightness,
+                    GlobalShadows = Lighting.GlobalShadows,
+                    OutdoorAmbient = Lighting.OutdoorAmbient
+                }
+            end
+
+            if not fullbrightConnection then
+                fullbrightConnection = RunService.RenderStepped:Connect(function()
+                    if fullbrightState then
+                        Lighting.Brightness = 1
+                        Lighting.GlobalShadows = false
+                        Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+                    end
+                end)
+            end
+
+        else
+            if fullbrightConnection then
+                fullbrightConnection:Disconnect()
+                fullbrightConnection = nil
+            end
+
+            if originalLighting then
+                Lighting.Brightness = originalLighting.Brightness
+                Lighting.GlobalShadows = originalLighting.GlobalShadows
+                Lighting.OutdoorAmbient = originalLighting.OutdoorAmbient
+            end
+        end
+    end
+})
+
+enviorment:Toggle({
+    Title = "Freeze Time",
+    Flag = "freezetime",
+    Callback = function(state)
+        freezeTime = state
+
+        if state then
+            if not timeConnection then
+                timeConnection = RunService.RenderStepped:Connect(function()
+                    if freezeTime then
+                        Lighting.ClockTime = frozenTime
+                    end
+                end)
+            end
+        else
+            if timeConnection then
+                timeConnection:Disconnect()
+                timeConnection = nil
+            end
+        end
+    end
+})
+
+enviorment:Slider({
+    Title = "Time",
+    Desc = "requires Freeze Time",
+    Step = 0.1,
+    Value = {
+        Min = 0,
+        Max = 24,
+        Default = Lighting.ClockTime,
+    },
+    Flag = "time",
+    Callback = function(value)
+        frozenTime = value
+        Lighting.ClockTime = value
+    end
+})
+
+enviorment:Button({
+    Title = "Delete Sky",
+    Desc = "Delete currently selected sky",
+    Callback = function()
+        Skys[currentsky] = nil
+        WindUI:Notify({
+            Title = "Info",
+            Content = "removed " .. currentsky,
+            Duration = 5,
+            Icon = "info",
+        })
+        currentsky = nil
+        Skyselector:Select(nil)
+        skylist = {}
+        for name, _ in pairs(Skys) do
+            table.insert(skylist, name)
+        end
+        Skyselector:Refresh(skylist)
+        updateconfig()
+        updatesky()
+    end
+})
+
+skins = Window:Tab({
+    Title = "Skins",
+    Icon = "droplets"
+})
+
+local APPLY_ALL = false
+local ENABLED = false
+local COLOR = Color3.fromRGB(255,255,255)
+
+local PART_SIZE = Vector3.new(4, 0.001, 13)
+local underglows = {}
+
+local function isLocalCar(car)
+	local plr = Players.LocalPlayer
+	if not plr then return false end
+	if car.Name:find(plr.Name) then return true end
+
+	local owner = car:FindFirstChild("Owner")
+	return owner and owner.Value == plr
+end
+
+RunService.RenderStepped:Connect(function()
+	for car,data in pairs(underglows) do
+		if data.body and data.part then
+			data.part.CFrame = data.body.CFrame * CFrame.new(0, -data.body.Size.Y + 2.5, 0)
+		end
+	end
+end)
+
+local function apply()
+	for car,data in pairs(underglows) do
+		if data.part then data.part:Destroy() end
+	end
+	underglows = {}
+
+	if not ENABLED then return end
+
+	local vehicles = workspace:FindFirstChild("Vehicles")
+	if not vehicles then return end
+
+	for _,car in ipairs(vehicles:GetChildren()) do
+		if APPLY_ALL or isLocalCar(car) then
+			local body = car:FindFirstChild("Body") and car.Body:FindFirstChild("Body")
+			if body and body:IsA("BasePart") then
+				local p = Instance.new("Part")
+				p.Size = PART_SIZE
+				p.Anchored = true
+				p.CanCollide = false
+				p.Transparency = 1
+                p.CFrame = body.CFrame * CFrame.new(0, -body.Size.Y - 0.05, 0)
+                p.Parent = workspace
+
+				local l = Instance.new("SurfaceLight")
+				l.Face = Enum.NormalId.Bottom
+				l.Angle = 180
+				l.Range = 8
+				l.Brightness = 4
+				l.Color = COLOR
+				l.Parent = p
+
+				underglows[car] = {part = p, body = body, light = l}
+			end
+		end
+	end
+end
+
+local vehicles = workspace:FindFirstChild("Vehicles")
+if vehicles then
+	vehicles.ChildAdded:Connect(apply)
+end
+
+skins:Toggle({
+	Title = "UNDERGLOW",
+    Desc = "might be buggy",
+	Default = false,
+    Flag = "underglow",
+	Callback = function(v)
+		ENABLED = v
+		apply()
+	end
+})
+
+skins:Toggle({
+	Title = "Apply to all",
+	Default = false,
+    Flag = "glowall",
+	Callback = function(v)
+		APPLY_ALL = v
+		apply()
+	end
+})
+
+skins:Colorpicker({
+	Title = "Underglow color",
+	Default = COLOR,
+    Flag = "underglowcolor",
+	Callback = function(v)
+		COLOR = v
+		for _,d in pairs(underglows) do
+			if d.light then
+				d.light.Color = v
+			end
+		end
+	end
+})
+
+skins:Divider()
+
+local skinlist = {"Default"}
+local sniperskin = "Default"
+local g36skin = "Default"
+local skinall = false
+local skinactive = true
+
+for name, _ in pairs(WeaponSkins) do
+    table.insert(skinlist, name)
+end
+
+skins:Toggle({
+    Title = "apply to all",
+    Flag = "skinall",
+    Callback = function(state)
+        skinall = state
+    end
+})
+
+g36skinselector = skins:Dropdown({
+    Title = "G36 Skin",
+    Values = skinlist,
+    Multi = false,
+    AllowNone = false,
+    Value = "Default",
+    Flag = "g36drop",
+    Callback = function(option)
+        g36skin = option
+    end
+})
+
+sniperskinselector = skins:Dropdown({
+    Title = "Sniper Skin",
+    Values = skinlist,
+    Multi = false,
+    AllowNone = false,
+    Value = "Default",
+    Flag = "sniperdrop",
+    Callback = function(option)
+        sniperskin = option
+    end
+})
+
+local function applySkin(weapon, skin, weaponType)
+    if not weapon then return end
+
+    local primaryPart, secondaryParts = nil, {}
+
+    if weaponType == "Sniper" then
+        primaryPart = weapon:FindFirstChild("Green")
+        table.insert(secondaryParts, weapon:FindFirstChild("Base"))
+    elseif weaponType == "G36" then
+        primaryPart = weapon:FindFirstChild("Body")
+        for _, partName in ipairs({"Stock", "Scope", "FlashlightBody"}) do
+            local part = weapon:FindFirstChild(partName)
+            if part then table.insert(secondaryParts, part) end
+        end
+    end
+
+    if not primaryPart then return end
+
+    if skin == "Default" then
+        primaryPart.TextureID = ""
+        for _, sec in ipairs(secondaryParts) do
+            sec.TextureID = ""
+        end
+    else
+        local skinData = WeaponSkins[skin]
+        if not skinData then return end
+
+        primaryPart.TextureID = skinData.primary or ""
+
+        for _, sec in ipairs(secondaryParts) do
+            sec.TextureID = skinData.secondary or ""
+        end
+    end
+end
+
+RunService.Heartbeat:Connect(function()
+    if skinactive then
+        local char = localPlayer.Character
+        if not char then return end
+
+        applySkin(char:FindFirstChild("Sniper"), sniperskin, "Sniper")
+        applySkin(char:FindFirstChild("G36"), g36skin, "G36")
+
+        if skinall then
+            for _, player in pairs(Players:GetPlayers()) do
+                if player ~= localPlayer then
+                    local otherChar = player.Character
+                    if otherChar then
+                        applySkin(otherChar:FindFirstChild("Sniper"), sniperskin, "Sniper")
+                        applySkin(otherChar:FindFirstChild("G36"), g36skin, "G36")
+                    end
+                end
+            end
+        else
+            for _, player in pairs(Players:GetPlayers()) do
+                if player ~= localPlayer then
+                    local otherChar = player.Character
+                    if otherChar then
+                        applySkin(otherChar:FindFirstChild("Sniper"), "Default", "Sniper")
+                        applySkin(otherChar:FindFirstChild("G36"), "Default", "G36")
+                    end
+                end
+            end
+        end
+    end
+end)
+
+skininput = skins:Input({
+    Title = "Import Skin",
+    Placeholder = 'skin json . . .',
+    Type = "Input",
+    Callback = function(input)
+        if input == "" then
+            return
+        end
+
+        local success, result = pcall(function()
+            return HttpService:JSONDecode(input)
+        end)
+
+        if not success then
+            WindUI:Notify({
+                Title = "ERROR",
+                Content = "Not a valid json",
+                Duration = 3,
+                Icon = "triangle-alert",
+            })
+            skininput:Set("")
+            return
+        end
+
+        local addedNames = {}
+
+        for name, skin in pairs(result) do
+            if type(skin) ~= "table" then
+                WindUI:Notify({
+                    Title = "ERROR",
+                    Content = "Not a valid json",
+                    Duration = 3,
+                    Icon = "triangle-alert",
+                })
+                skininput:Set("")
+                return
+            end
+
+            if not (skin.primary and skin.secondary) then
+                WindUI:Notify({
+                    Title = "ERROR",
+                    Content = "Not a valid json",
+                    Duration = 3,
+                    Icon = "triangle-alert",
+                })
+                skininput:Set("")
+                return
+            end
+
+            WeaponSkins[name] = skin
+            table.insert(addedNames, name)
+        end
+
+        skinlist = {"Default"}
+        for name, _ in pairs(WeaponSkins) do
+            table.insert(skinlist, name)
+        end
+
+        g36skinselector:Refresh(skinlist)
+        sniperskinselector:Refresh(skinlist)
+
+        updateconfig()
+
+        skininput:Set("")
+
+        WindUI:Notify({
+            Title = "SUCCESS",
+            Content = table.concat(addedNames, ", ") .. " got added",
+            Duration = 3,
+            Icon = "badge-check",
+        })
+    end
+})
+
+skins:Button({
+    Title = "Delete Skin",
+    Desc = "Delete the skin currently equiped on G36",
+    Callback = function()
+        if g36skin == "Default" then
+            WindUI:Notify({
+                Title = "Info",
+                Content = "cant remove Default skin",
+                Duration = 5,
+                Icon = "triangle-alert",
+            })
+            return
+        end
+
+        WeaponSkins[g36skin] = nil
+
+        if not WeaponSkins[sniperskin] then
+            sniperskin = "Default"
+        end
+
+        WindUI:Notify({
+            Title = "Info",
+            Content = "removed " .. g36skin,
+            Duration = 5,
+            Icon = "info",
+        })
+
+        local skinlist = {"Default"}
+        for name, _ in pairs(WeaponSkins) do
+            table.insert(skinlist, name)
+        end
+
+        g36skinselector:Refresh(skinlist)
+        sniperskinselector:Refresh(skinlist)
+
+        if not WeaponSkins[g36skin] then
+            g36skin = "Default"
+        end
+
+        if not WeaponSkins[sniperskin] then
+            sniperskinselector:Select("Default")
+        else
+            sniperskinselector:Select(sniperskin)
+        end
+
+        g36skinselector:Select(g36skin)
+
+        updateconfig()
+    end
+})
+
+skins:Divider()
+
+local gearlist = {"Default"}
+local vestskin = "Default"
+local headskin = "Default"
+local gearall = false
+
+for name, _ in pairs(GearSkins) do
+    table.insert(gearlist, name)
+end
+
+skins:Toggle({
+    Title = "apply to all",
+    Flag = "gearall",
+    Callback = function(state)
+        gearall = state
+    end
+})
+
+headskinselector = skins:Dropdown({
+    Title = "Head Gear Skin",
+    Values = gearlist,
+    Multi = false,
+    AllowNone = false,
+    Value = "Default",
+    Flag = "headdrop",
+    Callback = function(option)
+        headskin = option
+    end
+})
+
+vestskinselector = skins:Dropdown({
+    Title = "Vest Gear Skin",
+    Values = gearlist,
+    Multi = false,
+    AllowNone = false,
+    Value = "Default",
+    Flag = "vestdrop",
+    Callback = function(option)
+        vestskin = option
+    end
+})
+
+local function applyGear(gear, skin)
+    if not gear then return end
+
+    local part = gear:FindFirstChild("MainPart")
+    if not part then return end
+
+    if skin == "Default" then
+        if gear.Name == "Criminal Helmet" then
+            part.TextureID = "rbxassetid://17712965665"
+        elseif gear.Name == "Criminal Vest" then
+            part.TextureID = "rbxassetid://17712967030"
+        end
+        return
+    end
+
+    if GearSkins[skin] then
+        part.TextureID = GearSkins[skin]
+    end
+end
+
+RunService.Heartbeat:Connect(function()
+    if not skinactive then return end
+
+    local char = localPlayer.Character
+    if not char then return end
+
+    local acc = char:FindFirstChild("PlayerAccessories")
+    if not acc then return end
+
+    applyGear(acc:FindFirstChild("Criminal Helmet"), headskin)
+    applyGear(acc:FindFirstChild("Criminal Vest"), vestskin)
+
+    if gearall then
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= localPlayer then
+                local otherChar = player.Character
+                if otherChar then
+                    local otherAcc = otherChar:FindFirstChild("PlayerAccessories")
+                    if otherAcc then
+                        applyGear(otherAcc:FindFirstChild("Criminal Helmet"), headskin)
+                        applyGear(otherAcc:FindFirstChild("Criminal Vest"), vestskin)
+                    end
+                end
+            end
+        end
+    end
+end)
+
+gearinput = skins:Input({
+    Title = "Import Gear Skin",
+    Placeholder = 'skin json . . .',
+    Type = "Input",
+    Callback = function(input)
+        if input == "" then
+            return
+        end
+
+        local success, result = pcall(function()
+            return HttpService:JSONDecode(input)
+        end)
+
+        if not success then
+            WindUI:Notify({
+                Title = "ERROR",
+                Content = "Not a valid json",
+                Duration = 3,
+                Icon = "triangle-alert",
+            })
+            gearinput:Set("")
+            return
+        end
+
+        local addedNames = {}
+
+        for name, skin in pairs(result) do
+            if type(skin) ~= "string" then
+                WindUI:Notify({
+                    Title = "ERROR",
+                    Content = "Not a valid json",
+                    Duration = 3,
+                    Icon = "triangle-alert",
+                })
+                gearinput:Set("")
+                return
+            end
+
+            GearSkins[name] = skin
+            table.insert(addedNames, name)
+        end
+
+        gearlist = {"Default"}
+        for name, _ in pairs(GearSkins) do
+            table.insert(gearlist, name)
+        end
+
+        headskinselector:Refresh(gearlist)
+        vestskinselector:Refresh(gearlist)
+
+        updateconfig()
+
+        gearinput:Set("")
+
+        WindUI:Notify({
+            Title = "SUCCESS",
+            Content = table.concat(addedNames, ", ") .. " got added",
+            Duration = 3,
+            Icon = "badge-check",
+        })
+    end
+})
+
+skins:Button({
+    Title = "Delete Skin",
+    Desc = "Delete the skin currently equiped on helmet",
+    Callback = function()
+        if headskin == "Default" then
+            WindUI:Notify({
+                Title = "Info",
+                Content = "cant remove Default skin",
+                Duration = 5,
+                Icon = "triangle-alert",
+            })
+            return
+        end
+
+        GearSkins[headskin] = nil
+
+        if not GearSkins[vestskin] then
+            vestskin = "Default"
+        end
+
+        WindUI:Notify({
+            Title = "Info",
+            Content = "removed " .. headskin,
+            Duration = 5,
+            Icon = "info",
+        })
+
+        local skinlist = {"Default"}
+        for name, _ in pairs(GearSkins) do
+            table.insert(skinlist, name)
+        end
+
+        headskinselector:Refresh(skinlist)
+        vestskinselector:Refresh(skinlist)
+
+        if not GearSkins[headskin] then
+            headskin = "Default"
+        end
+
+        if not GearSkins[vestskin] then
+            vestskinselector:Select("Default")
+        else
+            vestskinselector:Select(vestskin)
+        end
+
+        headskinselector:Select(headskin)
+
+        updateconfig()
+    end
+})
+
+crosshair = Window:Tab({
+    Title = "Crosshair",
+    Icon = "crosshair"
+})
+
+local crosshaircolor = Color3.new(1,1,1)
+local crosshairthickness = 2
+local crosshairlength = 16
+local crosshairgap = 2
+local usecrosshair = false
+local staticcrosshair = false
+local nofadecrosshair = false
+
+local cross
+for _, gui in pairs(localPlayer.PlayerGui:GetChildren()) do
+    local first = gui:GetChildren()[1]
+    if first then
+        local target = first:FindFirstChild("5")
+        if target and target:IsA("ImageLabel") and target.Image == "rbxassetid://285779644" then
+            cross = first
+            break
+        end
+    end
+end
+
+if not cross then return end
+
+local p1 = cross:FindFirstChild("1") --up
+local p2 = cross:FindFirstChild("2") --left
+local p3 = cross:FindFirstChild("3") --down
+local p4 = cross:FindFirstChild("4") --right
+local lastframe = 25
+
+if not (p1 and p2 and p3 and p4) then return end
+
+RunService.RenderStepped:Connect(function(dt)
+    if not usecrosshair then return end
+
+    local t = crosshairthickness
+    local l = crosshairlength
+    local g = crosshairgap
+
+    p1.BackgroundColor3 = crosshaircolor
+    p2.BackgroundColor3 = crosshaircolor
+    p3.BackgroundColor3 = crosshaircolor
+    p4.BackgroundColor3 = crosshaircolor
+
+    p1.Size = UDim2.new(0, t, 0, l)
+    p2.Size = UDim2.new(0, l, 0, t)
+    p3.Size = UDim2.new(0, t, 0, l)
+    p4.Size = UDim2.new(0, l, 0, t)
+
+    if cross.Size.X.Offset < l + g*2 or staticcrosshair then  
+        cross.Size = UDim2.new(0, l + g*2, 0, l + g*2)
+    end
+
+    if 25 > l + g*2 and cross.Size.X.Offset < 26 and p1.Transparency < 0.1 then
+        lastframe = math.max(l + g*2, lastframe - dt*75)
+        cross.Size = UDim2.new(0, lastframe, 0, lastframe)
+    end
+
+    if cross.Size.X.Offset > 26 then
+        lastframe = 25
+    end
+
+    if p1.Transparency < 1 and nofadecrosshair then
+        p1.Transparency = 0
+        p2.Transparency = 0
+        p3.Transparency = 0
+        p4.Transparency = 0
+    end
+
+end)
+
+crosshair:Toggle({
+    Title = "Use Custom Crosshair",
+    Flag = "crosshair",
+    Callback = function(state)
+        usecrosshair = state
+        if state == false then
+            p1.Size = UDim2.new(0, 2, 0, 15)
+            p2.Size = UDim2.new(0, 15, 0, 2)
+            p3.Size = UDim2.new(0, 2, 0, 15)
+            p4.Size = UDim2.new(0, 15, 0, 2)
+
+            p1.BackgroundColor3 = Color3.new(1,1,1)
+            p2.BackgroundColor3 = Color3.new(1,1,1)
+            p3.BackgroundColor3 = Color3.new(1,1,1)
+            p4.BackgroundColor3 = Color3.new(1,1,1)
+        end
+    end
+})
+
+crosshair:Colorpicker({
+    Title = "Color",
+    Callback = function(c)
+        crosshaircolor = c
+    end
+})
+
+crosshair:Slider({
+    Title = "Thickness",
+    Step = 1,
+    Value = {Min = 1, Max = 30, Default = 2},
+    Flag = "tickness",
+    Callback = function(v)
+        crosshairthickness = v
+    end
+})
+
+crosshair:Slider({
+    Title = "Length",
+    Step = 1,
+    Value = {Min = 1, Max = 100, Default = 16},
+    Flag = "length",
+    Callback = function(v)
+        crosshairlength = v
+    end
+})
+
+crosshair:Slider({
+    Title = "Gap",
+    Step = 1,
+    Value = {Min = 0, Max = 30, Default = 2},
+    Flag = "gap",
+    Callback = function(v)
+        crosshairgap = v
+    end
+})
+
+crosshair:Toggle({
+    Title = "Static",
+    Desc = "fixed position with no movement",
+    Flag = "static",
+    Callback = function(state)
+        staticcrosshair = state
+    end
+})
+
+crosshair:Toggle({
+    Title = "No Fade",
+    Desc = "Fade in animation is skiped",
+    Flag = "nofade",
+    Callback = function(state)
+        nofadecrosshair = state
+    end
+})
+
+soundtab = Window:Tab({
+    Title = "Sounds",
+    Icon = "audio-lines"
+})
+
+local sounds = {
+    SniperShoot = "rbxassetid://801167040",
+    ARshoot = "rbxassetid://801226154"
+}
+
+local soundinputs = {}
+local customsoundlist = {"Default"}
+
+for customName, _ in pairs(CustomSounds) do
+    table.insert(customsoundlist, customName)
+end
+
+local soundFolder
+
+for _, folder in ipairs(repStorage:GetChildren()) do
+    if folder:IsA("Folder") then
+        local firstItem = folder:GetChildren()[1]
+        if firstItem and firstItem:IsA("Sound") then
+            soundFolder = folder
+            break
+        end
+    end
+end
+
+for name, id in pairs(sounds) do
+    local foundSound = nil
+
+    if soundFolder then
+        for _, obj in ipairs(soundFolder:GetDescendants()) do
+            if obj:IsA("Sound") and obj.SoundId == id then
+                foundSound = obj
+                break
+            end
+        end
+    end
+
+    if foundSound then
+        local currentSound = foundSound
+
+        table.insert(soundinputs, soundtab:Dropdown({
+            Title = name .. " sound",
+            Values = customsoundlist,
+            Multi = false,
+            AllowNone = false,
+            Value = "Default",
+            Flag = id,
+            Callback = function(option)
+                if option == "Default" then
+                    currentSound.SoundId = id
+                else
+                    currentSound.SoundId = CustomSounds[option]
+                end
+            end
+        }))
+    end
+end
+
+misc = Window:Tab({
+    Title = "Misc",
+    Icon = "tool-case",
+})
+
+local noScopeConn
+local cooldownConn
+
+misc:Toggle({
+    Title = "OG Sniper",
+    Desc = "Use sniper without scope",
+    Default = false,
+    Flag = "ogsniper",
+    Callback = function(state)
+        if state then
+            if noScopeConn then return end
+            noScopeConn = RunService.Heartbeat:Connect(function()
+                local char = localPlayer.Character
+                if not char then return end
+
+                local tool = char:FindFirstChild("Sniper")
+                if tool then
+                    tool:SetAttribute("Scope", false)
+                end
+            end)
+        else
+            if noScopeConn then
+                noScopeConn:Disconnect()
+                noScopeConn = nil
+            end
+        end
+    end
+})
+
+misc:Toggle({
+    Title = "OG Sniper Cooldown",
+    Desc = "Use old Sniper Cooldown (0.5 seconds)",
+    Default = false,
+    Flag = "ogsniper2",
+    Callback = function(state)
+        if state then
+            if cooldownConn then return end
+            cooldownConn = RunService.Heartbeat:Connect(function()
+                local char = localPlayer.Character
+                if not char then return end
+
+                local tool = char:FindFirstChild("Sniper")
+                if tool then
+                    tool:SetAttribute("ShootDelay", 0.5)
+                end
+            end)
+        else
+            if cooldownConn then
+                cooldownConn:Disconnect()
+                cooldownConn = nil
+            end
+        end
+    end
+})
+
+misc:Button({
+    Title = "Anti AFK",
+    Desc = "dont get kicked for idle",
+    Callback = function()
+        game:GetService("Players").LocalPlayer.Idled:Connect(function()
+            vu:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+            task.wait(1)
+            vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+        end)
+        WindUI:Notify({
+            Title = "Info",
+            Content = "Anti AFK now active",
+            Duration = 5,
+            Icon = "info",
+        })
+    end
+})
+
+-- the lib is just ass and we wont continue the project
+local configtab = Window:Tab({
+    Title = "Config",
+    Icon = "shredder"
+})
+
+local selectedConfig
+local configName
+
+local function getConfigs()
+    if not WindUI.Configs then return {} end
+    local list = {}
+    for name, _ in pairs(WindUI.Configs) do
+        table.insert(list, name)
+    end
+    table.sort(list)
+    return list
+end
+
+local function refreshDropdown()
+    local configs = getConfigs()
+    configselect:Refresh(configs)
+    configselect:Set(nil)
+    selectedConfig = nil
+end
+
+configselect = configtab:Dropdown({
+    Title = "Configs",
+    Values = getConfigs(),
+    AllowNone = true,
+    Multi = false,
+    Callback = function(value)
+        selectedConfig = value
+    end
+})
+
+confignameinput = configtab:Input({
+    Title = "Config Name",
+    Placeholder = "Enter config name",
+    Callback = function(value)
+        configName = value
+    end
+})
+
+configtab:Button({
+    Title = "Create / Save Config",
+    Callback = function()
+        if not configName or configName == "" then
+            WindUI:Notify({
+                Title = "Error",
+                Content = "Invalid config name",
+                Duration = 3,
+                Icon = "triangle-alert"
+            })
+            return
+        end
+
+        local config = WindUI:GetConfig(configName)
+        if not config then
+            WindUI:Notify({
+                Title = "Error",
+                Content = "Config system not initialized",
+                Duration = 3,
+                Icon = "triangle-alert"
+            })
+            return
+        end
+
+        config:Save()
+
+        refreshDropdown()
+        confignameinput:Set("")
+
+        WindUI:Notify({
+            Title = "Success",
+            Content = "Saved config: " .. configName,
+            Duration = 3,
+            Icon = "check"
+        })
+    end
+})
+
+configtab:Button({
+    Title = "Load Config",
+    Callback = function()
+        if not selectedConfig then
+            WindUI:Notify({
+                Title = "Error",
+                Content = "No config selected",
+                Duration = 3,
+                Icon = "triangle-alert"
+            })
+            return
+        end
+
+        local config = WindUI:GetConfig(selectedConfig)
+        if not config then
+            WindUI:Notify({
+                Title = "Error",
+                Content = "Config not found",
+                Duration = 3,
+                Icon = "triangle-alert"
+            })
+            return
+        end
+
+        config:Load()
+
+        WindUI:Notify({
+            Title = "Success",
+            Content = "Loaded config: " .. selectedConfig,
+            Duration = 3,
+            Icon = "check"
+        })
+    end
+})
+
+configtab:Button({
+    Title = "Delete Config",
+    Callback = function()
+        if not selectedConfig then
+            WindUI:Notify({
+                Title = "Error",
+                Content = "No config selected",
+                Duration = 3,
+                Icon = "triangle-alert"
+            })
+            return
+        end
+
+        local config = WindUI:GetConfig(selectedConfig)
+        if not config then
+            WindUI:Notify({
+                Title = "Error",
+                Content = "Config not found",
+                Duration = 3,
+                Icon = "triangle-alert"
+            })
+            return
+        end
+
+        config:Delete()
+
+        refreshDropdown()
+
+        WindUI:Notify({
+            Title = "Success",
+            Content = "Deleted config: " .. selectedConfig,
+            Duration = 3,
+            Icon = "check"
+        })
+
+        selectedConfig = nil
+    end
+}) 
+
+Window:OnDestroy(function()
+    skinactive = false
+    usecrosshair = false
+    p1.Size = UDim2.new(0, 2, 0, 15)
+    p2.Size = UDim2.new(0, 15, 0, 2)
+    p3.Size = UDim2.new(0, 2, 0, 15)
+    p4.Size = UDim2.new(0, 15, 0, 2)
+
+    p1.BackgroundColor3 = Color3.new(1,1,1)
+    p2.BackgroundColor3 = Color3.new(1,1,1)
+    p3.BackgroundColor3 = Color3.new(1,1,1)
+    p4.BackgroundColor3 = Color3.new(1,1,1)
+end)
